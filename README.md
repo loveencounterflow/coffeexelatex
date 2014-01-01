@@ -5,9 +5,9 @@
 ## Installation
 
 * put a symlink to your CoffeeXeLaTeX directory into a directory that is on LaTeX's search path; on OSX with
-  LiveTeX, that could be `~/Library/texmf/tex/latex`.[1]
+  LiveTeX, that could be `~/Library/texmf/tex/latex`.*
 
-  [1]: obviously, you could put xour CoffeeXeLaTeX installation directly there, but that strikes me as
+  *: obviously, you could put your CoffeeXeLaTeX installation directly there, but that strikes me as
   'wrong'.
 
 ## Useful Links
