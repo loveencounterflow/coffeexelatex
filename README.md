@@ -7,8 +7,9 @@
 Everyone who has worked with LaTeX knows how hard it can often be to get seemingly simple things done in
 this Turing-complete markup language. Let's face it, (La)TeX has many problems; the [complectedness](http://www.infoq.com/presentations/Simple-Made-Easy)
 of its inner workings and the extremely uneven syntax of its commands put a heavy burden on the average
-user. The funny thing is that while TeX is all about computational text processing, text processing and
-computations are *hard* to get right, or sometimes done at all, in this environment.
+user. The funny thing is that while TeX is all about computational text processing, doing some math and some
+string processing are *really hard* to get right, or sometimes done at all, in this environment. Not to
+mention that TeX has no notion of higher-order data types, such as lists.
 
 Often one wishes one could just do a simple calculation or build a typesetting object from available data
 *outside* of all that makes LaTeX so difficult to get right. Turns out: you can already do that.
