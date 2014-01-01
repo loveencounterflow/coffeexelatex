@@ -1,0 +1,39 @@
+
+\ProvidesPackage{coffeexelatex}
+
+% ----------------------------------------------------------------------------------------------------------
+\perlnewcommand{\nodeeval}[1]{`node -p "$_[0]"`}
+
+% ----------------------------------------------------------------------------------------------------------
+% A full CoffeeXeLaTeX invocation with `\noderunscript` takes three parameters:
+%
+% * the route to the dispatcher script;
+% * the name of the method to execute;
+% * a list of comma-separated arguments.
+%
+% The reason we defer argument parsing to the dispatcher script (when it conceivably could be done with
+% LaTeX) is simply that this kind of dataprocessing is infinitely easier to do in JavaScript.
+%
+\perlnewcommand{\noderunscript}[3]{`node "$_[0].js" "$_[1]" "$_[2]"`}
+
+% ----------------------------------------------------------------------------------------------------------
+% A simplified CoffeeXeLaTeX invocation with `\noderun` takes two parameters:
+%
+% * the name of the method to execute;
+% * a list of comma-separated arguments.
+%
+% The route to the dispatcher will be taken from the `\coffeexelatexroute` macro.
+%
+\newcommand{\noderun}[2]{\noderunscript{\coffeexelatexroute}{#1}{#2}}
+
+% ----------------------------------------------------------------------------------------------------------
+% This command defines the route to the `coffeexelatex/src/main.js` JavaScript module (without the `.js`).
+% The route setup here works in case you want to compile one of the examples from the CoffeeXeLaTeX distro
+% from within the respective directories; in the general case, you will have to adjust the path so NodeJS
+% knows where to find the script; use something along the lines of
+%
+% 		\renewcommand{\coffeexelatexroute}{route/to/main}
+%
+% in your `.tex` document to do that.
+%
+\newcommand{\coffeexelatexroute}{../../lib/main}

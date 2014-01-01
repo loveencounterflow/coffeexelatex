@@ -9,26 +9,10 @@
 \usepackage{perltex}
 \usepackage{lipsum}
 \usepackage[columnwise]{lineno}
-% \usepackage{mccolaction}
-
-% \usepackage{zref-savepos}
-% \usepackage{fp}
+\usepackage{coffeexelatex}
 
 
-% ==========================================================================================================
-% NODEJS
-% ----------------------------------------------------------------------------------------------------------
-\perlnewcommand{\nodeeval}[1]{`node -p "$_[0]"`}
-
-% ----------------------------------------------------------------------------------------------------------
-\perlnewcommand{\noderunscript}[3]{`node "$_[0].js" "$_[1]" "$_[2]"`}
-
-% ----------------------------------------------------------------------------------------------------------
-% TAINT: could well be implemented using `\noderunscript`
-% \perlnewcommand{\noderun}[2]{`node \coffeexelatexroute "$_[0]" "$_[1]"`}
-% \perlnewcommand{\noderun}[2]{`node "../../lib/main.js" "$_[0]" "$_[1]"`}
-\newcommand{\noderun}[2]{\noderunscript{\coffeexelatexroute}{#1}{#2}}
-\newcommand{\coffeexelatexroute}{../../lib/main}
+\renewcommand{\coffeexelatexroute}{../../lib/main}
 
 
 % ##########################################################################################################
