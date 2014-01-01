@@ -1,0 +1,29 @@
+{
+  "name": "coffeexelatex",
+  "version": "0.0.1",
+  "description": "Built on top of PerlTeX, CoffeeXeLaTeX allows to script (Xe)(La)TeX documents using JacaScript and/or CoffeeScript. Easily extended to accommodate for your favorite language.",
+  "main": "lib/main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/loveencounterflow/coffeexelatex.git"
+  },
+  "dependencies": {
+    "coffee-script": "~1.6.3"
+  },
+  "keywords": [
+    "tex",
+    "latex",
+    "coffeescript",
+    "xetex",
+    "xelatex",
+    "perltex"
+  ],
+  "author": "",
+  "license": "BSD-2-Clause",
+  "bugs": {
+    "url": "https://github.com/loveencounterflow/coffeexelatex/issues"
+  }
+}
