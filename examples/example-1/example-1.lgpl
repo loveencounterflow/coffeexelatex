@@ -1,0 +1,21 @@
+############################### PERL CODE ################################
+sub latex_nodeeval {`node -p "$_[0]"`}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% LATEX RESULT %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+############################### PERL CODE ################################
+sub latex_noderunscript {`node "$_[0].js" "$_[1]" "$_[2]"`}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% LATEX RESULT %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+############################### PERL CODE ################################
+latex_noderunscript ('../../lib/main', 'page-and-line-nr', '1,12');
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% LATEX RESULT %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+!!! DEBUG command: 'page-and-line-nr', parameter: '1,12'. !!!
+helo from NodeJS.
+this paragraph appears on page 1, column ..., line 12.
+
+

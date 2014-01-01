@@ -1,0 +1,90 @@
+
+% ##########################################################################################################
+\documentclass[a4paper]{memoir}
+\usepackage{jizuradictionary}
+\usepackage{perltex}
+\usepackage{lipsum}
+\usepackage[columnwise]{lineno}
+% \usepackage{mccolaction}
+
+\usepackage{zref-savepos}
+\usepackage{fp}
+
+
+% ==========================================================================================================
+% NODEJS
+% ----------------------------------------------------------------------------------------------------------
+\perlnewcommand{\nodeeval}[1]{`node -p "$_[0]"`}
+
+% ----------------------------------------------------------------------------------------------------------
+\perlnewcommand{\noderunscript}[3]{`node "$_[0].js" "$_[1]" "$_[2]"`}
+
+% ----------------------------------------------------------------------------------------------------------
+% TAINT: could well be implemented using `\noderunscript`
+\perlnewcommand{\noderun}[2]{`node "/Volumes/Storage/cnd/node_modules/coffeexelatex/lib/main.js" "$_[0]" "$_[1]"`}
+
+
+% ==========================================================================================================
+% POSITION
+% ----------------------------------------------------------------------------------------------------------
+\newcounter{jzrsaveposcount}
+\def\X{\zsavepos{XY}\FPdiv\result{\zposx{XY}}{65536}\result}
+\def\Y{\zsavepos{XY}\FPdiv\result{\zposy{XY}}{65536}\result}
+
+
+% ==========================================================================================================
+% OTHER STUFF
+% ----------------------------------------------------------------------------------------------------------
+\setlength{\columnsep}{10mm}
+% \def\makeLineNumberLeft{}
+
+
+% ##########################################################################################################
+\begin{document}
+% \begin{multicols}{5}
+\begin{multicols*}{3}
+
+helo world
+\cn{清} \cnxb{𠀀}
+
+\nodeeval{var x = 42; x}
+\clearpage
+
+\linenumbers
+% \nolinenumbers
+
+\lipsum[1]
+
+\stepcounter{jzrsaveposcount}
+% \noderunscript{perltex-with-nodejs}{page-and-line-nr}{\thepage,\thelinenumber}
+\noderun{page-and-line-nr}{\thepage,\thelinenumber}
+
+% \docolaction{first}{middle}{last}
+
+\lipsum[1]
+
+\lipsum[1]
+
+% \docolaction{first}{middle}{last}
+
+\thelinenumber
+
+\thelinenumber
+
+% \zsavepos{XY}%\fbox{Testing }
+% \medskip
+
+% \zposx{XY}, \zposy{XY}
+
+\Y
+
+\lipsum[1]
+
+\Y
+
+% \end{multicols}
+\end{multicols*}
+
+
+% ##########################################################################################################
+\end{document}

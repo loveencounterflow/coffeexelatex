@@ -1,14 +1,18 @@
 
 % ##########################################################################################################
-\documentclass[a4paper]{memoir}
-\usepackage{jizuradictionary}
+\documentclass[a4paper]{article}
+\usepackage{fontspec}
+\usepackage{polyglossia}
+\setdefaultlanguage{english}
+\usepackage{fixltx2e}
+% \usepackage{jizuradictionary}
 \usepackage{perltex}
 \usepackage{lipsum}
 \usepackage[columnwise]{lineno}
-\usepackage{mccolaction}
+% \usepackage{mccolaction}
 
-\usepackage{zref-savepos}
-\usepackage{fp}
+% \usepackage{zref-savepos}
+% \usepackage{fp}
 
 
 % ==========================================================================================================
@@ -21,69 +25,23 @@
 
 % ----------------------------------------------------------------------------------------------------------
 % TAINT: could well be implemented using `\noderunscript`
-\perlnewcommand{\noderun}[2]{`node "perltex-with-nodejs.js" "$_[0]" "$_[1]"`}
-
-
-% ==========================================================================================================
-% POSITION
-% ----------------------------------------------------------------------------------------------------------
-\newcounter{jzrsaveposcount}
-\def\X{\zsavepos{XY}\FPdiv\result{\zposx{XY}}{65536}\result}
-\def\Y{\zsavepos{XY}\FPdiv\result{\zposy{XY}}{65536}\result}
-
-
-% ==========================================================================================================
-% OTHER STUFF
-% ----------------------------------------------------------------------------------------------------------
-\setlength{\columnsep}{10mm}
-% \def\makeLineNumberLeft{}
+% \perlnewcommand{\noderun}[2]{`node \coffeexelatexroute "$_[0]" "$_[1]"`}
+% \perlnewcommand{\noderun}[2]{`node "../../lib/main.js" "$_[0]" "$_[1]"`}
+\newcommand{\noderun}[2]{\noderunscript{\coffeexelatexroute}{#1}{#2}}
+\newcommand{\coffeexelatexroute}{../../lib/main}
 
 
 % ##########################################################################################################
 \begin{document}
-% \begin{multicols}{5}
-\begin{multicols*}{3}
-
-helo world
-\cn{清} \cnxb{𠀀}
-
-\nodeeval{var x = 42; x}
-\clearpage
-
 \linenumbers
-% \nolinenumbers
 
 \lipsum[1]
 
-\stepcounter{jzrsaveposcount}
-% \noderunscript{perltex-with-nodejs}{page-and-line-nr}{\thepage,\thelinenumber}
+x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x
+x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x
+x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x
+x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x
 \noderun{page-and-line-nr}{\thepage,\thelinenumber}
-
-\docolaction{first}{middle}{last}
-
-\lipsum[1]
-
-\lipsum[1]
-
-\docolaction{first}{middle}{last}
-
-\thelinenumber
-
-\thelinenumber
-
-% \zsavepos{XY}%\fbox{Testing }
-% \medskip
-
-% \zposx{XY}, \zposy{XY}
-
-\Y
-
-\lipsum[1]
-
-\Y
-
-% \end{multicols}
-\end{multicols*}
 
 
 % ##########################################################################################################
