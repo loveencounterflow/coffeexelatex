@@ -55,6 +55,54 @@ You may want to have a look at `examples/example-1/example-1.lgpl` to get an ide
 happened behind the scenes (see [PerlTeX: Defining LaTeX macros using Perl](https://www.tug.org/TUGboat/tb25-2/tb81pakin.pdf)
 for an overview of the process).
 
+## Future Development
+
+If CoffeeXeLaTeX turns out to be a useful tool, i can presently see the following routes for development:
+
+* Using a Perl shell-escape command to start `node` all over for each single JS/CS macro is doubly
+  wasteful—first, a `perl` process is started which in turn starts a `node` subprocess. Depending on
+  specific use, this can mean that two processes (none of them exactly lightweight) are initiated hundreds
+  or thousands of times for a single document. This may be fixed in a number of ways:
+
+  * Firstly, we could try and remove the Perl dependency, and call `node` in exactly the way that `perl`
+    is called now. Not sure how to do that at this point in time.
+
+  * Secondly, we could opt for a client / server model and make it so that instead of starting a (heavy)
+    process for each JS/CS macro call, a (HTTP?) connection to a long-running NodeJS server is established.
+    This is also attractive as it would simplify state keeping—as it stands, each call to a given macro
+    starts with a clean slate (though one could imagine storing results from past calls in a file or a
+    database).
+
+  Both of the above options are only worth implementing when it has been shown that substantial benefits
+  in terms of performance, easy of use, and capabilities can be gained—something that is only meaningful
+  after experience with real-world use cases has been gained.
+
+* The one big incentive for using a 3rd-party language in tandem with LaTeX is to make things easy (or
+  at least achievable) that are difficult (or impossible) using only LaTeX.
+
+  Regrettably, our efforts are still limited to what can be communicated 'over the wire' between the LaTeX
+  process and the macro process; we do not have direct access to (La)TeX internals as such, but must package
+  every pertinent facet of the ongoing typesetting process as a textual argument for a macro.
+
+  Imagine you had to interact with your HTML page in this way—imagine JavaScript in the browser was
+  stateless and blissfully unaware of the DOM and CSS, imagine HTML was Turing-complete-but-hard-to-use
+  as is the case with TeX. Your capabilities-improved web application page would be littered with ugly
+  `<if condition='...'>...</if>` tags and circumlocutorily reified calls to JS. This is the state of affairs
+  of PerlTeX / CoffeeXeLaTeX, and it is definitely a programming model begging to be improved.
+
+
+
+## Related Work
+
+from http://get-software.net/macros/latex/contrib/pythontex
+
+% \begin{itemize}
+% \item \href{http://www.ctan.org/tex-archive/macros/latex/contrib/perltex/}{Perl\TeX} allows the bodies of \LaTeX\ macros to be written in Perl.
+% \item \href{http://www.ctan.org/tex-archive/macros/latex/contrib/sagetex/}{Sage\TeX} allows code for the Sage mathematics software to be executed from within a \LaTeX\ document.
+% \item Martin R.\ Ehmsen's \href{http://www.ctan.org/pkg/python}{|python.sty|} provides a very basic method of executing Python code from within a \LaTeX\ document.
+% \item \href{http://elec.otago.ac.nz/w/index.php/SympyTeX}{Sympy\TeX} allows more sophisticated Python execution, and is largely based on a subset of Sage\TeX.
+% \item \href{http://www.luatex.org/}{Lua\TeX} extends the pdf\TeX\ engine to provide Lua as an embedded scripting language, and as a result yields tight, low-level Lua integration.
+% \end{itemize}
 
 
 ## Useful Links
