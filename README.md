@@ -22,7 +22,7 @@ In short, here are a few great things about PerlTeX:
 
 * It's *not* a custom-patched TeX version, but just a Perl script and a LaTeX `.sty` file*.
 
-  > *) in other words: TeX can already execute external programs *by itself*. The important added value
+  > \*) in other words: TeX can already execute external programs *by itself*. The important added value
   > of PerlTeX is that it provides a reasonably safe and efficient framework to ensure communication between
   > multiple processes and that it hides the (ugly) details from the casual user.
 
