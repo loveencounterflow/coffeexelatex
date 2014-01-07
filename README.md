@@ -98,16 +98,34 @@ If CoffeeXeLaTeX turns out to be a useful tool, i can presently see the followin
 
 ## Related Work
 
-from http://get-software.net/macros/latex/contrib/pythontex
+* [PythonTeX](https://github.com/gpoore/pythontex) is an interesting approach to bringing LaTeX and Python
+  together. Unfortunately, the authors are preconcerned with showing off Pygment's syntax hiliting
+  capabilities (which are ... not really that great) and how to print out integrals using SymPy, and fail
+  to provide sample code of interest to a wider audience. Their copious 128-page manual only dwells for one and a half page on the topic
+  of 'how do i use this stuff', and that only to show off more SymPy capabilities. None of their sample
+  code *needs* PythonTeX anyway, since none of it demonstrates how to interact with the document typesetting
+  process; as such, all their formulas and plots may be produced offline, completely independent from LaTeX.
+  Given that the installation instructions are too scary and longwinded for my taste, and that PythonTeX is
+  not part of LiveTeX, i've given up on the matter.
 
-% \begin{itemize}
-% \item \href{http://www.ctan.org/tex-archive/macros/latex/contrib/perltex/}{Perl\TeX} allows the bodies of \LaTeX\ macros to be written in Perl.
-% \item \href{http://www.ctan.org/tex-archive/macros/latex/contrib/sagetex/}{Sage\TeX} allows code for the Sage mathematics software to be executed from within a \LaTeX\ document.
-% \item Martin R.\ Ehmsen's \href{http://www.ctan.org/pkg/python}{|python.sty|} provides a very basic method of executing Python code from within a \LaTeX\ document.
-% \item \href{http://elec.otago.ac.nz/w/index.php/SympyTeX}{Sympy\TeX} allows more sophisticated Python execution, and is largely based on a subset of Sage\TeX.
-% \item \href{http://www.luatex.org/}{Lua\TeX} extends the pdf\TeX\ engine to provide Lua as an embedded scripting language, and as a result yields tight, low-level Lua integration.
-% \end{itemize}
+(the below taken from http://get-software.net/macros/latex/contrib/pythontex):
 
+* \href{http://www.ctan.org/tex-archive/macros/latex/contrib/sagetex/}{Sage\TeX} allows code for the Sage
+  mathematics software to be executed from within a \LaTeX\ document.
+
+* Martin R. Ehmsen's [`python.sty`](http://www.ctan.org/pkg/python) provides a very basic method of
+  executing Python code from within a LaTeX document.
+
+* [SympyTeX](http://elec.otago.ac.nz/w/index.php/SympyTeX) allows more sophisticated Python execution, and
+  is largely based on a subset of SageTeX.
+
+* [LuaTeX](http://www.luatex.org/) extends the pdfTeX engine to provide Lua as an embedded scripting
+  language, and as a result yields tight, low-level Lua integration.
+
+  LuaTeX is one of the most interesting projects in this field as it represents an attempt to provide a
+  close coupling of a real programming language with LaTeX. Unfortunately, that language is Lua, a language
+  that (like Go btw) believes that Unicode strings should be stored as UTF-8 bytes. Equally unfortunately,
+  LuaTeX uses pdfTeX, which can't compare to XeLaTeX when it comes to using custom TTF/OTF fonts.
 
 ## Useful Links
 

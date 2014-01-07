@@ -37,3 +37,26 @@
 % in your `.tex` document to do that.
 %
 \newcommand{\coffeexelatexroute}{../../lib/main}
+
+% ==========================================================================================================
+% WRITING TO THE `.AUX` FILE
+% ----------------------------------------------------------------------------------------------------------
+% The `\aux{}` and `\auxc{}` commands write a line to the `*.aux` file to enable messaging between LaTeX and
+% NodeJS outside of command execution. Lines produced by `\auxc{}` start with a `% ` (percent, blank) so
+% they will be ignored by LaTeX.
+%
+% thx to http://tex.stackexchange.com/a/115933/28067
+\makeatletter
+\catcode`\%=11
+\newcommand{\aux}[1]{\immediate\write\@auxout{#1}}
+\newcommand{\auxc}[1]{\immediate\write\@auxout{^^25 #1}}
+\catcode`\%=14
+\makeatother
+
+
+% ==========================================================================================================
+% Useful packages
+% ----------------------------------------------------------------------------------------------------------
+\usepackage[usenames,dvipsnames,svgnames,table]{xcolor}
+\usepackage{currfile}
+\usepackage[pass]{geometry}

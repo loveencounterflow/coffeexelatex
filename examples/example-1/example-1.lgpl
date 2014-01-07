@@ -11,11 +11,17 @@ sub latex_noderunscript {`node "$_[0].js" "$_[1]" "$_[2]"`}
 
 
 ############################### PERL CODE ################################
-latex_noderunscript ('../../lib/main', 'page-and-line-nr', '1,12');
+latex_noderunscript ('../../lib/main', 'page-and-line-nr', '2,15');
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%% LATEX RESULT %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-!!! DEBUG command: 'page-and-line-nr', parameter: '1,12'. !!!
-helo from NodeJS.
-this paragraph appears on page 1, column ..., line 12.
+helo from NodeJS."
+this paragraph appears on page 2, column ..., line 15.
+
+
+############################### PERL CODE ################################
+latex_noderunscript ('../../lib/main', 'escape', '\\currfilename ');
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% LATEX RESULT %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\textbackslash\{\}currfilename 
 
 

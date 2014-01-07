@@ -1,6 +1,6 @@
 
 % ##########################################################################################################
-\documentclass[a4paper]{article}
+\documentclass[a5paper]{article}
 \usepackage{fontspec}
 \usepackage{polyglossia}
 \setdefaultlanguage{english}
@@ -13,13 +13,23 @@
 
 
 \renewcommand{\coffeexelatexroute}{../../lib/main}
+% \newcommand{\noderun}[2]{\noderunscript{\coffeexelatexroute}{#1}{#2}}
 
 
 % ##########################################################################################################
 \begin{document}
 \linenumbers
 
+% first page left blank, so a double page (spread) can be conviently seen in PDF viewer
+\clearpage\mbox{}\clearpage
+
+\label{somelabel}
 \lipsum[1]
+
+% \aux{this line goes to the aux file}
+% {\makeatletter\protected@write\@auxout{}{\% hello 2}}
+
+\auxc{this line goes to the aux file}
 
 x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x
 x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x
@@ -27,6 +37,19 @@ x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x 
 x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x
 \noderun{page-and-line-nr}{\thepage,\thelinenumber}
 
+\textbackslash{}pageref\{somelabel\}: \pageref{somelabel}
+
+\textbackslash{}ref\{somelabel\}: \ref{somelabel}
+
+\textbackslash{}pageref\{otherlabel\}: \pageref{otherlabel}
+
+\noderun{escape}{\noexpand\currfilename}\currfilename
+
+\clearpage
+\label{otherlabel}
+
+
+\jobname
 
 % ##########################################################################################################
 \end{document}
