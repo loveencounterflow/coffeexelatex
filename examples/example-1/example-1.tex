@@ -4,81 +4,155 @@
 \usepackage{lipsum}
 \usepackage[columnwise]{lineno}
 \usepackage{coffeexelatex}
+\usepackage[top=10mm]{geometry}
+% \usepackage[headheight=10mm]{geometry}
 
 
 \renewcommand{\coffeexelatexroute}{../../lib/main}
 % \newcommand{\noderun}[2]{\noderunscript{\coffeexelatexroute}{#1}{#2}}
 
-
 % ##########################################################################################################
 \begin{document}
-\linenumbers
+% \linenumbers
 
-% first page left blank, so a double page (spread) can be conviently seen in PDF viewer
-\clearpage\mbox{}\clearpage
+\CX
 
-% \immediate\write18{ls > /tmp/write18-input}
-% \input{/tmp/write18-input}
-
-\immediate\write18{node ../../lib/main.js write18 helo readers > /tmp/temp.dat}\input{/tmp/temp.dat}
-
-
-  % [ ///  \\  ///g,  '\\textbackslash{}',    ]
-  % [ ///  %   ///g,  '\\%',                  ]
-  % [ ///  _   ///g,  '\\_',                  ]
-  % [ ///  ~   ///g,  '\\textasciitilde{}',   ]
-
-
+\clearpage%\mbox{}\clearpage
 
 \section{Introduction}
-\label{somelabel}
-\lipsum[1]
+% \label{somelabel}
+% \lipsum[1]
 
-% \aux{this line goes to the aux file}
-% {\makeatletter\protected@write\@auxout{}{\% hello 2}}
-% \newcommand*\getlength[1]{\fpDiv{\R}{\number#1}{65536}\R}
+(1) The original technique to execute an arbitrary command:
 
-\auxc{this line goes to the aux file}
-\auxgeo
+\begin{verbatim}
+\immediate\write18{node
+  "\coffeexelatexroute"
+  "\currfilepath"
+  "helo"
+  "readers (one)"
+  > /tmp/temp.dat}\input{/tmp/temp.dat}
+\end{verbatim}
 
-\auxcs{ foo: \{ bar: 'baz' \} }
+(2) With ugly details largely hidden, the \verb#\exec{}# command is still fully general:
 
-\auxcs{
-  "page-nr":      \thepage,
-  jobname:        "\jobname"
-  }
-\auxcs{ "just a text" }
+\begin{verbatim}
+\exec{node
+  "\coffeexelatexroute"
+  "\currfilepath"
+  "helo"
+  "readers (two)"}
+\end{verbatim}
 
-x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x
-x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x
-x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x
-x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x
-\noderun{page-and-line-nr}{\thepage,\thelinenumber}
+(3) \verb#\noderunscript{}# will execute NodeJS code that adheres to the call convention established by
+\CX:
 
-\textbackslash{}pageref\{somelabel\}: \pageref{somelabel}
+\begin{verbatim}
+\noderunscript
+  {\coffeexelatexroute}
+  {\currfilepath}
+  {helo}
+  {readers (three)}
+\end{verbatim}
 
-\textbackslash{}ref\{somelabel\}: \ref{somelabel}
+(4) Like the previous example, but with standard values assumed as shown above. This is the form that you
+will want to use most of the time:
 
-Also see section \ref{otherlabel}, '\nameref{otherlabel}', on page \pageref{otherlabel}
+\begin{verbatim}
+\noderun{helo}{readers (four)}
+\end{verbatim}
 
-\noderun{escape}{\noexpand\currfilename}\currfilename
+
+{\textbf{Outputs:}}
+
+\immediate\write18{node "\coffeexelatexroute" "\currfilepath" "helo" "readers (one)" > /tmp/temp.dat}\input{/tmp/temp.dat}
+
+\exec{node "\coffeexelatexroute" "\currfilepath" "helo" "readers (two)"}
+
+\noderunscript{\coffeexelatexroute}{\currfilepath}{helo}{readers (three)}
+
+\noderun{helo}{readers (four)}
 
 \clearpage
-\section{References}
-\label{otherlabel}
+\section{Geometry}
+
+% Write arbitrary text into the aux file:
+\auxc{this line goes to the aux file}
+
+% Write geometry data into the aux file:
+\auxgeo
+
+Use geometry data from aux file to render a table of layout dimensions into the document;
+note the we could have used the \verb#\auxgeo# command anywhere in the document and that
+this currently only works for documents with a single, constant layout.
+
+Also note we're using a dash instead of an underscore here—in \TeX, underscores are special, so
+we conveniently allow dashes to make things easier. The \CX\ command \verb#show-geometry# does
+not take arguments, which is why the second pair of braces has been left empty:
+
+{\textbf{Command:}}
+
+\verb#\noderun{show-geometry}{}#\par
+
+{\textbf{Output:}}
+
+\noderun{show-geometry}{}
+
+\clearpage
+\section{Character Escaping}
+The \CX\ command \verb#show-special-chrs# demonstrates that it is easy to include \TeX\ special characters
+in the return value. The simple rule is that whenever the output of a command is meant to be understood
+literally, it should be \verb#@escape#d:
+
+{\textbf{Command:}}
+
+\verb#\noderun{show-special-chrs}{}#
+
+{\textbf{Output:}}
+
+\noderun{show-special-chrs}{}
 
 
-currfiledir: \currfiledir
 
-currfilebase: \currfilebase
 
-currfileext: \currfileext
+% \auxcs{ foo: \{ bar: 'baz' \} }
 
-currfilename: \currfilename
+% \auxcs{
+%   "page-nr":      \thepage,
+%   jobname:        "\jobname"
+%   }
+% \auxcs{ "just a text" }
 
-currfilepath: \currfilepath
+% x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x
+% x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x
+% x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x
+% x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x
+% \noderun{page-and-line-nr}{\thepage,\thelinenumber}
 
-\jobname
+% \textbackslash{}pageref\{somelabel\}: \pageref{somelabel}
+
+% \textbackslash{}ref\{somelabel\}: \ref{somelabel}
+
+% Also see section \ref{otherlabel}, '\nameref{otherlabel}', on page \pageref{otherlabel}
+
+% \noderun{escape}{\noexpand\currfilename}\currfilename
+
+% \clearpage
+% \section{References}
+% \label{otherlabel}
+
+
+% currfiledir: \currfiledir
+
+% currfilebase: \currfilebase
+
+% currfileext: \currfileext
+
+% currfilename: \currfilename
+
+% currfilepath: \currfilepath
+
+% \jobname
 
 % ##########################################################################################################
 \end{document}

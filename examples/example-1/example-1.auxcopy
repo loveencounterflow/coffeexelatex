@@ -20,54 +20,8 @@
 \@writefile{toc}{\select@language {english}}
 \@writefile{lof}{\select@language {english}}
 \@writefile{lot}{\select@language {english}}
-\@LN{0}{0}
-% this line goes to the aux file
-% coffee geometry: \protect \char "007B\relax   paperwidth: 27597261, paperheight: 39158276, textwidth: 19317998, textheight: 27410673, headheight: 786432, headsep: 1638400, footskip: 1966080, marginparsep: 720896, marginparwidth: 196608, voffset: 0, topmargin: -2462078,  \protect \char "007D\relax 
-% coffee  foo: \protect \char "007B\relax  bar: 'baz' \protect \char "007D\relax  
-% coffee  "page-nr": 2, jobname: "example-1" 
-% coffee  "just a text" 
-\@LN{1}{1}
-\@LN{2}{1}
-\@LN{3}{1}
-\@LN{4}{1}
-\@LN{5}{1}
-\@LN{6}{1}
-\@LN{7}{1}
-\@LN{8}{1}
-\@LN{9}{1}
 \@writefile{toc}{\contentsline {section}{\numberline {1}Introduction}{2}{section.1}}
-\newlabel{somelabel}{{1}{2}{Introduction}{section.1}{}}
-\@LN{10}{1}
-\@LN{11}{1}
-\@LN{12}{1}
-\@LN{13}{1}
-\@LN{14}{1}
-\@LN{15}{1}
-\@LN{16}{1}
-\@LN{17}{1}
-\@LN{18}{1}
-\@LN{19}{1}
-\@LN{20}{1}
-\@LN{21}{1}
-\@LN{22}{1}
-\@LN{23}{1}
-\@LN{24}{1}
-\@LN{25}{1}
-\@LN{26}{1}
-\@LN{27}{1}
-\@LN{28}{1}
-\@LN{29}{1}
-\@LN{30}{1}
-\@LN{31}{1}
-\@LN{32}{1}
-\@LN{33}{2}
-\@LN{34}{2}
-\@LN{35}{3}
-\@writefile{toc}{\contentsline {section}{\numberline {2}References}{4}{section.2}}
-\newlabel{otherlabel}{{2}{4}{References}{section.2}{}}
-\@LN{36}{3}
-\@LN{37}{3}
-\@LN{38}{3}
-\@LN{39}{3}
-\@LN{40}{3}
-\@LN{41}{3}
+% this line goes to the aux file
+% coffee geometry: \protect \char "007B\relax   paperwidth: 27597261, paperheight: 39158276, textwidth: 19317998, textheight: 32594557, headheight: 786432, headsep: 1638400, footskip: 1966080, marginparsep: 720896, marginparwidth: 196608, voffset: 0, topmargin: -5296439,  \protect \char "007D\relax 
+\@writefile{toc}{\contentsline {section}{\numberline {2}Geometry}{3}{section.2}}
+\@writefile{toc}{\contentsline {section}{\numberline {3}Character Escaping}{4}{section.3}}

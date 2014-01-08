@@ -47,6 +47,7 @@ Line_by_line              = require 'line-by-line'
 @_main = ->
   ### The `main` routine collects the command name and command parameters from the environment
   ###
+  info "©45 argv: #{rpr process.argv}"
   texroute    = process.argv[ 2 ]
   command     = process.argv[ 3 ]
   parameter   = process.argv[ 4 ]
@@ -55,9 +56,8 @@ Line_by_line              = require 'line-by-line'
   signatures?) ###
   parameters  = parameter.split ','
   method_name = command.replace /-/g, '_'
-  info "©44 texroute: #{rpr texroute}"
-  info "©45 argv: #{rpr process.argv}"
-  info "©46 command: #{rpr command}, parameter: #{rpr parameter}"
+  # info "©44 texroute: #{rpr texroute}"
+  # info "©46 command: #{rpr command}, parameter: #{rpr parameter}"
   #.........................................................................................................
   unless @[ method_name ]?
     message = "Unknown command: #{rpr command}"
@@ -81,7 +81,9 @@ Line_by_line              = require 'line-by-line'
     warn "unable to locate #{auxroute}; ignoring"
     eventually => handler null
     return null
-  @aux[ 'labels' ] = labels = {}
+  #.........................................................................................................
+  @aux[ 'auxroute'  ] = auxroute
+  @aux[ 'labels'    ] = labels = {}
   #.........................................................................................................
   @_lines_of auxroute, ( error, line, line_nr ) =>
     return handler error if error?
@@ -200,6 +202,13 @@ Line_by_line              = require 'line-by-line'
 debug = @debug.bind @
 echo  = @echo.bind @
 
+
+#===========================================================================================================
+# SAMPLE COMMANDS
+#-----------------------------------------------------------------------------------------------------------
+@helo = ( name ) ->
+  return "{Hello, \\textcolor{blue}{#{@escape name}}!}"
+
 #-----------------------------------------------------------------------------------------------------------
 @page_and_line_nr = ( page_nr, line_nr ) ->
   page_nr     = parseInt page_nr, 10
@@ -209,8 +218,41 @@ echo  = @echo.bind @
     This paragraph appears on page #{page_nr}, column ..., line #{line_nr}."""
 
 #-----------------------------------------------------------------------------------------------------------
-@helo = ( name ) ->
-  echo @escape "helo #{name}"
+@show_geometry = ->
+  unless ( g = @aux[ 'geometry' ] )?
+    debug """unable to retrieve geometry info from #{@aux[ 'auxroute' ]};"""
+      # you may want to consider using `\\auxgeo` in your TeX source."""
+    return null
+  #.........................................................................................................
+  R     = []
+  names = ( name for name of g ).sort()
+  #.........................................................................................................
+  for name in names
+    value = g[ name ]
+    value = if value? then ( ( value.toFixed 2 ).concat 'mm' ) else './.'
+    R.push "#{name}: #{value}"
+  #.........................................................................................................
+  return "Geometry:\\par\n".concat R.join '\\par\n'
+
+#-----------------------------------------------------------------------------------------------------------
+@show_special_chrs = ->
+  chr_by_names =
+    'opening brace':    '{'
+    'closing brace':    '}'
+    'Dollar sign':      '$'
+    'ampersand':        '&'
+    'hash':             '#'
+    'caret':            '^'
+    'underscore':       '_'
+    'wave':             '~'
+    'percent sign':     '%'
+  #.........................................................................................................
+  R = []
+  for name, chr of chr_by_names
+    R.push "#{name}: #{@escape chr}"
+  #.........................................................................................................
+  return "Special characters:\\par\n".concat R.join '\\par\n'
+
 
 #===========================================================================================================
 # SERIALIZATION

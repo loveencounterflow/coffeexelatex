@@ -8,28 +8,19 @@
 \usepackage{polyglossia}
 \setdefaultlanguage{english}
 \usepackage{fixltx2e}
+\usepackage{perltex}
 \usepackage{hyperref}
 \usepackage[usenames,dvipsnames,svgnames,table]{xcolor}
 \usepackage{currfile}
-\usepackage{xltxtra}
-% \usepackage{geometry}
+\usepackage{geometry}
 % \usepackage{fp}
 % \usepackage{fltpoint}
-
-% ==========================================================================================================
-% LOGO
-% ----------------------------------------------------------------------------------------------------------
-\newcommand{\CX}{\textit{Coffee}\XeLaTeX}
 
 
 % ==========================================================================================================
 % CORE COMMANDS
 % ----------------------------------------------------------------------------------------------------------
-\newcommand{\exec}[1]{%
-  \immediate\write18{#1 > /tmp/temp.dat}\input{/tmp/temp.dat}}
-
-% ----------------------------------------------------------------------------------------------------------
-\newcommand{\nodeeval}[1]{`node -p "$_[0]"`}
+\perlnewcommand{\nodeeval}[1]{`node -p "$_[0]"`}
 
 % ----------------------------------------------------------------------------------------------------------
 % A full CoffeeXeLaTeX invocation with `\noderunscript` takes four parameters:
@@ -42,7 +33,7 @@
 % The reason we defer argument parsing to the dispatcher script (when it conceivably could be done with
 % LaTeX) is simply that this kind of dataprocessing is infinitely easier to do in JavaScript.
 %
-\newcommand{\noderunscript}[4]{\exec{node "#1" "#2" "#3" "#4"}}
+\perlnewcommand{\noderunscript}[4]{`node "$_[0].js" "$_[1]" "$_[2]" "$_[3]"`}
 
 % ----------------------------------------------------------------------------------------------------------
 % A simplified CoffeeXeLaTeX invocation with `\noderun` takes two parameters:
@@ -121,10 +112,6 @@
 % into the `*.aux` file that are then converted to convenient millimeters. Note there is currently no
 % way to handle intermittent document format changes; as it stands, `auxgeo{}` will only work as intended
 % when the layout stays the same for all pages where its data is requested.
-%
-% Not that in order to use this command, you must have `\usepackage{geometry}` in your preamble. We can't do
-% that for you since you likely will want to set your own page layout options.
-%
 \newcommand*\getlength[1]{\number#1}
 \newcommand{\auxgeo}{\auxpod{geometry}{
   % top:            \the\top,
