@@ -1,0 +1,59 @@
+
+\documentclass[a5paper]{article}
+\usepackage{polyglossia}
+\setdefaultlanguage{english}
+\usepackage[usenames,dvipsnames,svgnames,table]{xcolor}
+
+\begin{document}
+
+A A A
+
+% http://stackoverflow.com/a/8929976/256361
+% --enable-pipes mytexfile
+% ### NOTE You'll need to set `--enable-write18` to use this. ###
+% thx to http://tex.stackexchange.com/a/20566/28067 for the `\@@input|"..."` part
+
+
+% \begingroup
+% \@@input|"node ../../lib/main.js write18 helo readers"
+% \makeatletter
+% \@@input|"ls /Users"
+% \makeatother
+% \endgroup
+
+% \begingroup
+% \catcode`\{=11
+% \catcode`\}=11
+% \catcode`⊂=1
+% \catcode`⊃=2
+% \catcode`\$=11
+% \catcode`\&=11
+% \catcode`\#=11
+% \catcode`\^=11
+% \catcode`_=11
+% \catcode`~=11
+% \catcode`\%=11
+\immediate\write18{node ../../lib/main.js write18 helo readers > /tmp/temp.dat}\input{/tmp/temp.dat}
+% \endgroup
+% \makeatother
+% \catcode`{=1
+% \catcode`}=2
+% \catcode`$=3
+% \catcode`&=4
+% \catcode`#=6
+% \catcode`^=7
+% \catcode`_=8
+% \catcode`~=13
+% \catcode`%=14
+
+% \makeatletter
+% \makeatother
+
+
+
+
+% \input|"node -v"
+
+B B B
+
+\end{document}

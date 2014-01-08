@@ -17,6 +17,19 @@
 % first page left blank, so a double page (spread) can be conviently seen in PDF viewer
 \clearpage\mbox{}\clearpage
 
+% \immediate\write18{ls > /tmp/write18-input}
+% \input{/tmp/write18-input}
+
+\immediate\write18{node ../../lib/main.js write18 helo readers > /tmp/temp.dat}\input{/tmp/temp.dat}
+
+
+  % [ ///  \\  ///g,  '\\textbackslash{}',    ]
+  % [ ///  %   ///g,  '\\%',                  ]
+  % [ ///  _   ///g,  '\\_',                  ]
+  % [ ///  ~   ///g,  '\\textasciitilde{}',   ]
+
+
+
 \section{Introduction}
 \label{somelabel}
 \lipsum[1]

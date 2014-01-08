@@ -11,11 +11,11 @@ sub latex_noderunscript {`node "$_[0].js" "$_[1]" "$_[2]" "$_[3]"`}
 
 
 ############################### PERL CODE ################################
-latex_noderunscript ('../../lib/main', 'example-1.tex', 'page-and-line-nr', '2,15');
+latex_noderunscript ('../../lib/main', 'example-1.tex', 'page-and-line-nr', '2,23');
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%% LATEX RESULT %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Helo from NodeJS.
-This paragraph appears on page 2, column ..., line 15.
+This paragraph appears on page 2, column ..., line 23.
 
 
 ############################### PERL CODE ################################

@@ -27,8 +27,6 @@
 % coffee  "page-nr": 2, jobname: "example-1" 
 % coffee  "just a text" 
 \@LN{1}{1}
-\@writefile{toc}{\contentsline {section}{\numberline {1}Introduction}{2}{section.1}}
-\newlabel{somelabel}{{1}{2}{Introduction}{section.1}{}}
 \@LN{2}{1}
 \@LN{3}{1}
 \@LN{4}{1}
@@ -37,6 +35,8 @@
 \@LN{7}{1}
 \@LN{8}{1}
 \@LN{9}{1}
+\@writefile{toc}{\contentsline {section}{\numberline {1}Introduction}{2}{section.1}}
+\newlabel{somelabel}{{1}{2}{Introduction}{section.1}{}}
 \@LN{10}{1}
 \@LN{11}{1}
 \@LN{12}{1}
@@ -54,12 +54,20 @@
 \@LN{24}{1}
 \@LN{25}{1}
 \@LN{26}{1}
-\@LN{27}{2}
-\@writefile{toc}{\contentsline {section}{\numberline {2}References}{3}{section.2}}
-\newlabel{otherlabel}{{2}{3}{References}{section.2}{}}
-\@LN{28}{2}
-\@LN{29}{2}
-\@LN{30}{2}
-\@LN{31}{2}
-\@LN{32}{2}
+\@LN{27}{1}
+\@LN{28}{1}
+\@LN{29}{1}
+\@LN{30}{1}
+\@LN{31}{1}
+\@LN{32}{1}
 \@LN{33}{2}
+\@LN{34}{2}
+\@LN{35}{3}
+\@writefile{toc}{\contentsline {section}{\numberline {2}References}{4}{section.2}}
+\newlabel{otherlabel}{{2}{4}{References}{section.2}{}}
+\@LN{36}{3}
+\@LN{37}{3}
+\@LN{38}{3}
+\@LN{39}{3}
+\@LN{40}{3}
+\@LN{41}{3}

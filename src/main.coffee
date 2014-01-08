@@ -19,8 +19,9 @@ whisper                   = TRM.get_logger 'whisper',   badge
 alert                     = TRM.get_logger 'alert',     badge
 warn                      = TRM.get_logger 'warn',      badge
 help                      = TRM.get_logger 'help',      badge
-echo                      = TRM.echo.bind TRM
+_echo                     = TRM.echo.bind TRM
 #...........................................................................................................
+eventually                = process.nextTick
 coffee                    = require 'coffee-script'
 Line_by_line              = require 'line-by-line'
 
@@ -30,6 +31,20 @@ Line_by_line              = require 'line-by-line'
 
 #-----------------------------------------------------------------------------------------------------------
 @main = ->
+  # try
+  #   xxx
+  #   @_main()
+  # catch error
+  #   debug "there was an unhandled exception"
+  #   debug()
+  #   debug error[ 'message' ]
+  #   debug error[ 'stack' ]
+  @_main()
+  #.........................................................................................................
+  return null
+
+#-----------------------------------------------------------------------------------------------------------
+@_main = ->
   ### The `main` routine collects the command name and command parameters from the environment
   ###
   texroute    = process.argv[ 2 ]
@@ -54,6 +69,7 @@ Line_by_line              = require 'line-by-line'
     throw error if error?
     warn @aux
     echo R if ( R = @[ method_name ] parameters... )?
+  #.........................................................................................................
   return null
 
 #-----------------------------------------------------------------------------------------------------------
@@ -61,6 +77,10 @@ Line_by_line              = require 'line-by-line'
   last_idx  = texroute.length - 1 - ( njs_path.extname texroute ).length
   auxroute  = texroute[ 0 .. last_idx ].concat '.auxcopy'
   # warn "#{auxroute} has #{( njs_fs.statSync auxroute ).size} bytes"
+  unless njs_fs.existsSync auxroute
+    warn "unable to locate #{auxroute}; ignoring"
+    eventually => handler null
+    return null
   @aux[ 'labels' ] = labels = {}
   #.........................................................................................................
   @_lines_of auxroute, ( error, line, line_nr ) =>
@@ -168,10 +188,17 @@ Line_by_line              = require 'line-by-line'
 #
 #-----------------------------------------------------------------------------------------------------------
 @debug = ( message ) ->
-  echo "\\textbf{\\textcolor{red}{#{@escape message}}}"
+  return echo() unless message?
+  echo "\\textbf{\\textcolor{red}{#{@escape message.replace /\n+/g, '\\par\\n\\n' }}}"
+
+#-----------------------------------------------------------------------------------------------------------
+@echo = ( P... ) ->
+  whisper P...
+  return _echo P...
 
 #-----------------------------------------------------------------------------------------------------------
 debug = @debug.bind @
+echo  = @echo.bind @
 
 #-----------------------------------------------------------------------------------------------------------
 @page_and_line_nr = ( page_nr, line_nr ) ->
@@ -181,6 +208,9 @@ debug = @debug.bind @
     Helo from NodeJS.
     This paragraph appears on page #{page_nr}, column ..., line #{line_nr}."""
 
+#-----------------------------------------------------------------------------------------------------------
+@helo = ( name ) ->
+  echo @escape "helo #{name}"
 
 #===========================================================================================================
 # SERIALIZATION
