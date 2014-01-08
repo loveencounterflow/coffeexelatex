@@ -96,6 +96,16 @@ If CoffeeXeLaTeX turns out to be a useful tool, i can presently see the followin
 
 
 
+## Good to Know
+
+The [PerlTeX Manual](http://mirror.unl.edu/ctan/macros/latex/contrib/perltex/perltex.pdf) warns users that
+"`perltex.pl` may hang if LaTeX exits right before the final pipe communication", but unfortunately says
+nothing about the circumstances leading to such a condition nor how to avoid them. For the time being,
+users of PerlTeX and, by extension, CoffeeXeLaTeX have to live with the fact that every so often, a
+running LaTeX job will just stop doing anything, typically displaying something like `(./example.pipe)` as
+last line of output. I then routinely hit `Ctrl-C` and restart the process, keeping fingers crossed.
+
+
 ## Related Work
 
 * [PythonTeX](https://github.com/gpoore/pythontex) is an interesting approach to bringing LaTeX and Python

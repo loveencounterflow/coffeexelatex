@@ -11,7 +11,8 @@
     "url": "https://github.com/loveencounterflow/coffeexelatex.git"
   },
   "dependencies": {
-    "coffee-script": "~1.6.3"
+    "coffee-script": "~1.6.3",
+    "line-by-line": "~0.1.1"
   },
   "keywords": [
     "tex",

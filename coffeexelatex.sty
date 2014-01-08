@@ -1,20 +1,39 @@
 
 \ProvidesPackage{coffeexelatex}
 
+% ==========================================================================================================
+% USEFUL PACKAGES
+% ----------------------------------------------------------------------------------------------------------
+\usepackage{fontspec}
+\usepackage{polyglossia}
+\setdefaultlanguage{english}
+\usepackage{fixltx2e}
+\usepackage{perltex}
+\usepackage{hyperref}
+\usepackage[usenames,dvipsnames,svgnames,table]{xcolor}
+\usepackage{currfile}
+\usepackage{geometry}
+% \usepackage{fp}
+% \usepackage{fltpoint}
+
+
+% ==========================================================================================================
+% CORE COMMANDS
 % ----------------------------------------------------------------------------------------------------------
 \perlnewcommand{\nodeeval}[1]{`node -p "$_[0]"`}
 
 % ----------------------------------------------------------------------------------------------------------
-% A full CoffeeXeLaTeX invocation with `\noderunscript` takes three parameters:
+% A full CoffeeXeLaTeX invocation with `\noderunscript` takes four parameters:
 %
 % * the route to the dispatcher script;
+% * the route to the current TeX script, relative to the CWD, as produced by `currfile/currfilepath`;
 % * the name of the method to execute;
 % * a list of comma-separated arguments.
 %
 % The reason we defer argument parsing to the dispatcher script (when it conceivably could be done with
 % LaTeX) is simply that this kind of dataprocessing is infinitely easier to do in JavaScript.
 %
-\perlnewcommand{\noderunscript}[3]{`node "$_[0].js" "$_[1]" "$_[2]"`}
+\perlnewcommand{\noderunscript}[4]{`node "$_[0].js" "$_[1]" "$_[2]" "$_[3]"`}
 
 % ----------------------------------------------------------------------------------------------------------
 % A simplified CoffeeXeLaTeX invocation with `\noderun` takes two parameters:
@@ -24,7 +43,7 @@
 %
 % The route to the dispatcher will be taken from the `\coffeexelatexroute` macro.
 %
-\newcommand{\noderun}[2]{\noderunscript{\coffeexelatexroute}{#1}{#2}}
+\newcommand{\noderun}[2]{\noderunscript{\coffeexelatexroute}{\currfilepath}{#1}{#2}}
 
 % ----------------------------------------------------------------------------------------------------------
 % This command defines the route to the `coffeexelatex/src/main.js` JavaScript module (without the `.js`).
@@ -32,7 +51,7 @@
 % from within the respective directories; in the general case, you will have to adjust the path so NodeJS
 % knows where to find the script; use something along the lines of
 %
-% 		\renewcommand{\coffeexelatexroute}{route/to/main}
+%     \renewcommand{\coffeexelatexroute}{route/to/main}
 %
 % in your `.tex` document to do that.
 %
@@ -41,22 +60,81 @@
 % ==========================================================================================================
 % WRITING TO THE `.AUX` FILE
 % ----------------------------------------------------------------------------------------------------------
-% The `\aux{}` and `\auxc{}` commands write a line to the `*.aux` file to enable messaging between LaTeX and
+% The `\aux*{}` commands write a line to the `*.aux` file to enable messaging between LaTeX and
 % NodeJS outside of command execution. Lines produced by `\auxc{}` start with a `% ` (percent, blank) so
-% they will be ignored by LaTeX.
+% they will be ignored by LaTeX. Lines produced by `\auxcs{}` start with a `% coffee ` (percent, blank,
+% literal 'coffee', blank) and will be parsed as CoffeeScript.
 %
-% thx to http://tex.stackexchange.com/a/115933/28067
+% Observe that if the argument to one of the `\aux*{}` commands should include newlines, then TeX will
+% 'fold' those lines back into a single line, so your CoffeeScript code should be written as though on a
+% single line. To clarify, always end list elements and object name / value pairs with a comma. This will
+% cause a syntax error:
+%
+%     \auxcs{
+%       "we are on page": \thepage
+%       "just a value": 43 }
+%
+% but this is OK:
+%
+%     \auxcs{
+%       "we are on page": \thepage,
+%       "just a value": 43 }
+%
+% The CoffeeXeLaTeX macro has a variable `@aux` that contains all the values transported via the `*.aux`
+% file. When you put an unnamed POD literal inside an `\auxcs{}` command, its name / value pairs will be
+% used to populate the `@aux` variable.
+%
+% The `\auxpod{}` command takes two arguments, a name and a CoffeeScript object / 'plain old dictionary'
+% (POD) literal. It simplifies the creation of namespaces in `@aux`, so instead of
+%
+%     \auxcs{ foo: \{ bar: 'baz' \} }
+%
+% you can simply write
+%
+%     \auxpod{foo}{ bar: 'baz' }
+%
+% to effectively do `@aux[ 'foo' ] = { bar: 'baz' }`. Note that we currently simply overwrite existing
+% entries in `@aux` instead of updating them; this may change in the future. The `\auxgeo{}` command
+% is a real-world example for `\auxpod{}` usage.
+%
+% thx to http://tex.stackexchange.com/a/115933/28067 for the `\write\@auxout` part.
 \makeatletter
 \catcode`\%=11
 \newcommand{\aux}[1]{\immediate\write\@auxout{#1}}
 \newcommand{\auxc}[1]{\immediate\write\@auxout{^^25 #1}}
+\newcommand{\auxcs}[1]{\immediate\write\@auxout{^^25 coffee #1}}
+\newcommand{\auxpod}[2]{\immediate\write\@auxout{^^25 coffee #1: \{ #2 \}}}
 \catcode`\%=14
 \makeatother
 
-
-% ==========================================================================================================
-% Useful packages
 % ----------------------------------------------------------------------------------------------------------
-\usepackage[usenames,dvipsnames,svgnames,table]{xcolor}
-\usepackage{currfile}
-\usepackage[pass]{geometry}
+% The `\auxgeo` command may be called after `\begin{document}`; it writes a number of raw layout dimensions
+% into the `*.aux` file that are then converted to convenient millimeters. Note there is currently no
+% way to handle intermittent document format changes; as it stands, `auxgeo{}` will only work as intended
+% when the layout stays the same for all pages where its data is requested.
+\newcommand*\getlength[1]{\number#1}
+\newcommand{\auxgeo}{\auxpod{geometry}{
+  % top:            \the\top,
+  % left:           \the\left,
+  % inner:          \the\inner,
+  % right:          \the\right,
+  % outer:          \the\outer,
+  % bottom:         \the\bottom,
+  % width:          \the\width,
+  % height:         \the\height,
+  paperwidth:     \getlength{\paperwidth},
+  paperheight:    \getlength{\paperheight},
+  textwidth:      \getlength{\textwidth},
+  textheight:     \getlength{\textheight},
+  headheight:     \getlength{\headheight},
+  headsep:        \getlength{\headsep},
+  footskip:       \getlength{\footskip},
+  marginparsep:   \getlength{\marginparsep},
+  marginparwidth: \getlength{\marginparwidth},
+  voffset:        \getlength{\voffset},
+  topmargin:      \getlength{\topmargin},
+  }}
+
+
+
+

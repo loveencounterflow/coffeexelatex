@@ -1,12 +1,6 @@
 
 % ##########################################################################################################
 \documentclass[a5paper]{article}
-\usepackage{fontspec}
-\usepackage{polyglossia}
-\setdefaultlanguage{english}
-\usepackage{fixltx2e}
-% \usepackage{jizuradictionary}
-\usepackage{perltex}
 \usepackage{lipsum}
 \usepackage[columnwise]{lineno}
 \usepackage{coffeexelatex}
@@ -23,13 +17,24 @@
 % first page left blank, so a double page (spread) can be conviently seen in PDF viewer
 \clearpage\mbox{}\clearpage
 
+\section{Introduction}
 \label{somelabel}
 \lipsum[1]
 
 % \aux{this line goes to the aux file}
 % {\makeatletter\protected@write\@auxout{}{\% hello 2}}
+% \newcommand*\getlength[1]{\fpDiv{\R}{\number#1}{65536}\R}
 
 \auxc{this line goes to the aux file}
+\auxgeo
+
+\auxcs{ foo: \{ bar: 'baz' \} }
+
+\auxcs{
+  "page-nr":      \thepage,
+  jobname:        "\jobname"
+  }
+\auxcs{ "just a text" }
 
 x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x
 x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x
@@ -41,13 +46,24 @@ x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x 
 
 \textbackslash{}ref\{somelabel\}: \ref{somelabel}
 
-\textbackslash{}pageref\{otherlabel\}: \pageref{otherlabel}
+Also see section \ref{otherlabel}, '\nameref{otherlabel}', on page \pageref{otherlabel}
 
 \noderun{escape}{\noexpand\currfilename}\currfilename
 
 \clearpage
+\section{References}
 \label{otherlabel}
 
+
+currfiledir: \currfiledir
+
+currfilebase: \currfilebase
+
+currfileext: \currfileext
+
+currfilename: \currfilename
+
+currfilepath: \currfilepath
 
 \jobname
 
