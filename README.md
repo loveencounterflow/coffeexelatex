@@ -66,7 +66,7 @@ Someone might even have managed to place a mildly
 useful package on CTAN, one that has some obfuscated parts designed to take over world leadership on
 Friday, 13th—who knows? **The fact that TeX is a programming language that works by repeatedly re-writing
 itself does not exactly help in doing static code analysis**; in fact, such code is called
-['metamorphic code'](http://en.wikipedia.org/wiki/Metamorphic_code) and is a well-known technique employed
+'[metamorphic code](http://en.wikipedia.org/wiki/Metamorphic_code)' and is a well-known technique employed
 by computer viruses.
 
 I do not write this section of the present README to scare you away, just to inform whoever is concerned
