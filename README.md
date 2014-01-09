@@ -54,8 +54,24 @@ public TeX installations for a living are susceptible to malicious code.*
 
 **It is a misconception that TeX source is 'safe' because 'TeX is text-based format'** (how stupid is that,
 anyway?); **the truth is that by doing `latex xy.tex` you're executing code which may do malicious things**.
-Period. That said, it's clear that `--enable-write18` just 'opens the barn door', as it were, but in fact,
-there are quite a few other and less well known avenues for TeX-based malware to do things on your computer.
+Period. That said, the papers linked below make it quite clear that `--enable-write18` just 'opens the barn
+door', as it were, but in fact, there are quite a few other and less well known avenues for TeX-based
+malware to do things on your computer.
+
+And please don't think you're safe just because you're not executing
+anything but your own TeX source—that, in case you're using LaTeX, is highly improbable: any given real-world
+LaTeX document will start with a fair number of `\usepackage{}` statements, and each one of those refers to
+a source that is publicly accessible on the internet and has been so for maybe five or ten or more years.
+Someone might even have managed to place a mildly
+useful package on CTAN, one that has some obfuscated parts designed to take over world leadership on
+Friday, 13th—who knows? **The fact that TeX is a programming language that works by repeatedly re-writing
+itself does not exactly help in doing static code analysis**; in fact, such code is called
+['metamorphic code'](http://en.wikipedia.org/wiki/Metamorphic_code) and is a well-known technique employed
+by computer viruses.
+
+I do not write this section of the present README to scare you away, just to inform whoever is concerned
+of a little known fact of life. The gist of this is: don't have `--enable-write18` turned on except you
+know what you're doing, but be aware that running TeX has always been unsafe anyway.
 
 > *) see e.g. http://cseweb.ucsd.edu/~hovav/dist/tex-login.pdf, http://cseweb.ucsd.edu/~hovav/dist/texhack.pdf
 
