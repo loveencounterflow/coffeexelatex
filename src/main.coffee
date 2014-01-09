@@ -229,10 +229,12 @@ echo  = @echo.bind @
   #.........................................................................................................
   for name in names
     value = g[ name ]
-    value = if value? then ( ( value.toFixed 2 ).concat 'mm' ) else './.'
-    R.push "#{name}: #{value}"
+    value = if value? then ( ( value.toFixed 2 ).concat ' mm' ) else './.'
+    R.push "#{name} & #{value}"
   #.........................................................................................................
-  return "Geometry:\\par\n".concat R.join '\\par\n'
+  R = R.join '\\\\\n'
+  R = "\\begin{tabular}{ l | r }\n#{R}\\\n\\end{tabular}"
+  return R
 
 #-----------------------------------------------------------------------------------------------------------
 @show_special_chrs = ->
@@ -248,10 +250,11 @@ echo  = @echo.bind @
     'percent sign':     '%'
   #.........................................................................................................
   R = []
-  for name, chr of chr_by_names
-    R.push "#{name}: #{@escape chr}"
+  R.push "#{name} & #{@escape chr}" for name, chr of chr_by_names
+  R = R.join '\\\\\n'
+  R = "\\begin{tabular}{ l | c }\n#{R}\\\n\\end{tabular}"
   #.........................................................................................................
-  return "Special characters:\\par\n".concat R.join '\\par\n'
+  return R
 
 
 #===========================================================================================================

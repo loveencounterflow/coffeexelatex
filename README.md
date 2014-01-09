@@ -7,36 +7,57 @@
 Everyone who has worked with LaTeX knows how hard it can often be to get seemingly simple things done in
 this Turing-complete markup language. Let's face it, (La)TeX has many problems; the [complectedness](http://www.infoq.com/presentations/Simple-Made-Easy)
 of its inner workings and the extremely uneven syntax of its commands put a heavy burden on the average
-user. The funny thing is that while TeX is all about computational text processing, doing some math and some
-string processing are *really hard* to get right, or sometimes done at all, in this environment. Not to
-mention that TeX has no notion of higher-order data types, such as lists.
+user. The funny thing is that while TeX is all about computational text processing, doing math and
+string processing are *really hard* to get right—or even get done at all—in this environment (not to
+mention that TeX has no notion of higher-order data types, such as, say, lists).
 
 Often one wishes one could just do a simple calculation or build a typesetting object from available data
-*outside* of all that makes LaTeX so difficult to get right. Turns out: you can already do that.
+*outside* of all that makes LaTeX so difficult to get right. Turns out you can already do that, and you
+don't have to recompile TeX.
 
-Few people seem to have realized that **there is a widely distributed TeX engine that allows execution of
-arbitrary code outside the TeX VM that provides a two-way communication from TeX to the external program
-and back from that external program to TeX**. This thing is called [PerlTeX](http://www.ctan.org/tex-archive/macros/latex/contrib/perltex).
+Most of the time, running TeX means to author a source file and have the TeX executable convert that into
+a PDF. Of course, this implies reading and writing of files and executing binaries. Interestingly for us, both
+capabilities—file access and command execution—are made available to user-facing side of TeX: writing to
+a file happens via the `\write` command, while input from a file is done with `\input`; command execution
+repurposes `\write`, which may be called with the special stream number `18` (internally, TeX does almost
+everything with registers that are sometimes given symbolic names; it also enumerates 'channels' for file
+operations, and reserves #18 for writing to the command line and executing stuff). This is how the `\exec`
+command is defined in CoffeeXeLaTeX:
 
-In short, here are a few great things about PerlTeX:
+    \newcommand{\exec}[1]{%
+      \immediate\write18{#1 > /tmp/coffeexelatex.tex}\input{/tmp/coffeexelatex.tex}}
 
-* It's *not* a custom-patched TeX version, but just a Perl script and a LaTeX `.sty` file*.
+This command says, in essence: given a single argument `#1`, have the OS execute it as a command, and do
+that immediately (i.e. not at some arbitrary point in the future); redirect its output into the temporary file
+`/tmp/coffeexelatex.tex`; then, read back the contents of that file, and insert that text into the
+current TeX source.
 
-  > \*) in other words: TeX can already execute external programs *by itself*. The important added value
-  > of PerlTeX is that it provides a reasonably safe and efficient framework to ensure communication between
-  > multiple processes and that it hides the (ugly) details from the casual user.
-
-* If you installed LiveTeX, chances are you already have the `perltex` executable on your path.
-
-* PerlTeX has a command line switch that allows you to choose your (La)TeX engine (see below). For me that
-  means *i can profit from the Unicode- and font-awareness of XeLaTeX* and *script my documents* at the same
-  time.
-
-* PerlTeX uses temporary files to communicate between the TeX and the script process; this makes the
-  implementation fairly OS-agnostic.
-
+> With some TeXs, its possible to avoid the temporary file by using `\@@input|"dir"`, but XeTeX as
+> provided by TeXLive 2013 does not allow that.
 
 
+
+## Security Considerations
+
+Be aware that executing arbitrary code with a command line like
+`xelatex --enable-write18 --shell-escape somefile.tex`
+is inherently unsafe: a TeX file downloaded from somewhere could erase your disk, access your email, or
+install a program on your computer. This is what the `--enable-write18` switch is for: it is by default fully
+or partially disabled so an arbitrary TeX source gets limited access to your computer.
+
+If you're scared now, please hang on a second. I just want to tell you *you should be really, really scared*.
+Why? Because if you ever downloaded some TeX source to compile it on your machine **even without the
+`--enable-write18` switch** you've already **executed potentially harmful code**. Few people are aware of
+it, but many TeX installations are quite 'liberal' in respect to what TeX sources—TeX programs, really—are
+allowed to do *even in absence of command line switches*, and, as a result, even people who are hosting
+public TeX installations for a living are susceptible to malicious code.*
+
+**It is a misconception that TeX source is 'safe' because 'TeX is text-based format'** (how stupid is that,
+anyway?); **the truth is that by doing `latex xy.tex` you're executing code which may do malicious things**.
+Period. That said, it's clear that `--enable-write18` just 'opens the barn door', as it were, but in fact,
+there are quite a few other and less well known avenues for TeX-based malware to do things on your computer.
+
+> *) see e.g. http://cseweb.ucsd.edu/~hovav/dist/tex-login.pdf, http://cseweb.ucsd.edu/~hovav/dist/texhack.pdf
 
 ## Installation
 

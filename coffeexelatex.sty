@@ -26,7 +26,7 @@
 % CORE COMMANDS
 % ----------------------------------------------------------------------------------------------------------
 \newcommand{\exec}[1]{%
-  \immediate\write18{#1 > /tmp/temp.dat}\input{/tmp/temp.dat}}
+  \immediate\write18{#1 > /tmp/coffeexelatex.tex}\input{/tmp/coffeexelatex.tex}}
 
 % ----------------------------------------------------------------------------------------------------------
 \newcommand{\nodeeval}[1]{`node -p "$_[0]"`}

@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.1415926-2.5-0.9999.3 (TeX Live 2013) (format=xelatex 2013.6.22)  8 JAN 2014 19:56
+This is XeTeX, Version 3.1415926-2.5-0.9999.3 (TeX Live 2013) (format=xelatex 2013.6.22)  9 JAN 2014 11:54
 entering extended mode
  \write18 enabled.
  %&-line parsing enabled.
@@ -865,25 +865,25 @@ emp.dat)...executed.
 
 
 (/tmp/temp.dat)
-runsystem(node "../../lib/main" "example-1.tex" "helo" "readers (two)" > /tmp/t
-emp.dat)...executed.
+runsystem(node "../../lib/main" "example-1.tex" "helo" "readers (two)" > /tmp/c
+offeexelatex.tex)...executed.
 
- (/tmp/temp.dat)
+ (/tmp/coffeexelatex.tex)
 runsystem(node "../../lib/main" "example-1.tex" "helo" "readers (three)" > /tmp
-/temp.dat)...executed.
+/coffeexelatex.tex)...executed.
 
- (/tmp/temp.dat)
+ (/tmp/coffeexelatex.tex)
 runsystem(node "../../lib/main" "example-1.tex" "helo" "readers (four)" > /tmp/
-temp.dat)...executed.
+coffeexelatex.tex)...executed.
 
- (/tmp/temp.dat) [2
+
+(/tmp/coffeexelatex.tex) [2
 
 ]
-runsystem(node "../../lib/main" "example-1.tex" "show-geometry" "" > /tmp/temp.
-dat)...executed.
+runsystem(node "../../lib/main" "example-1.tex" "show-geometry" "" > /tmp/coffe
+exelatex.tex)...executed.
 
-
-(/tmp/temp.dat) [3
+ (/tmp/coffeexelatex.tex) [3
 
 ]
 Overfull \hbox (5.91478pt too wide) in paragraph at lines 103--106
@@ -891,10 +891,10 @@ Overfull \hbox (5.91478pt too wide) in paragraph at lines 103--106
 ]\EU1/lmtt/m/n/10 show-special-chrs \EU1/lmr/m/n/10 demonstrates that
  []
 
-runsystem(node "../../lib/main" "example-1.tex" "show-special-chrs" "" > /tmp/t
-emp.dat)...executed.
+runsystem(node "../../lib/main" "example-1.tex" "show-special-chrs" "" > /tmp/c
+offeexelatex.tex)...executed.
 
-(/tmp/temp.dat)
+(/tmp/coffeexelatex.tex)
 Package atveryend Info: Empty hook `BeforeClearDocument' on input line 158.
  [4
 
@@ -906,11 +906,11 @@ Package atveryend Info: Empty hook `AtEndAfterFileList' on input line 158.
  ) 
 Here is how much of TeX's memory you used:
  23269 strings out of 493938
- 444453 string characters out of 6148857
- 562658 words of memory out of 5000000
+ 444543 string characters out of 6148857
+ 562676 words of memory out of 5000000
  26346 multiletter control sequences out of 15000+600000
  4080 words of font info for 25 fonts, out of 8000000 for 9000
  1144 hyphenation exceptions out of 8191
- 53i,5n,45p,860b,328s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 53i,7n,45p,860b,328s stack positions out of 5000i,500n,10000p,200000b,80000s
 
 Output written on example-1.pdf (4 pages).
