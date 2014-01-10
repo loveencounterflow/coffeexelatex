@@ -24,16 +24,25 @@ everything with registers that are sometimes given symbolic names; it also enume
 operations, and reserves #18 for writing to the command line and executing stuff). This is how the `\exec`
 command is defined in CoffeeXeLaTeX:
 
+    \newcommand{\coffeexelatextemproute}{/tmp/coffeexelatex.tex}
+
     \newcommand{\exec}[1]{%
-      \immediate\write18{#1 > /tmp/coffeexelatex.tex}\input{/tmp/coffeexelatex.tex}}
+      \immediate\write18{#1 > \coffeexelatextemproute}
+      \input{\coffeexelatextemproute}
+      }
 
 This command says, in essence: given a single argument `#1`, have the OS execute it as a command, and do
 that immediately (i.e. not at some arbitrary point in the future); redirect its output into the temporary file
 `/tmp/coffeexelatex.tex`; then, read back the contents of that file, and insert that text into the
 current TeX source.
 
-> With some TeXs, its possible to avoid the temporary file by using `\@@input|"dir"`, but XeTeX as
-> provided by TeXLive 2013 does not allow that.
+With some TeXs, its possible to avoid the temporary file by using `\@@input|"dir"`, but XeTeX as
+provided by TeXLive 2013 does not allow that. As much as i'd like to eliminate the somewhat unelegant
+temporary file (that brings one more possible point of failure to the equation; remember to
+`\renewcommand{\coffeexelatextemproute}{some/temp/location.tex}` where deemed necessary), it also has one
+advantage: in case TeX should halt execution becuase of an error, and that error is due to a script
+with faulty output, you can conveniently review the problematic source by opening the temporary file in
+your text editor.
 
 
 

@@ -6,28 +6,54 @@
 \usepackage{coffeexelatex}
 \usepackage[top=10mm]{geometry}
 % \usepackage[headheight=10mm]{geometry}
+\usepackage{leading}
+\usepackage{parskip}
+% \usepackage{etoolbox}
+% \usepackage{/Volumes/Storage/cnd/node_modules/jizura-xelatex/tex-inputs/background-grid}
+\usepackage{xeCJK}
+\setCJKmainfont{Sun-ExtA}
+
+\newenvironment{jzrplain}{%
+% ..........................................................................................................
+% begin
+  % thx to http://www.tug.org/TUGboat/tb28-1/tb88bazargan.pdf for the next two settings:
+  \lineskiplimit=-10pt%
+  \lineskip=0pt%
+  \topskip=0pt%
+  % \setlength{\parskip}{4mm}%
+  \setlength{\parindent}{0mm}%
+  % \fontsize{\nominalfontsize}{\gridstrutlength}%
+  \leading{4mm}
+  % \makeatletter
+  % \preto{\@verbatim}{\topsep=0pt \partopsep=0pt }
+  % \makeatother
+  }%
+% end
+  {\par}
 
 
-\renewcommand{\coffeexelatexroute}{../../lib/main}
-% \newcommand{\noderun}[2]{\noderunscript{\coffeexelatexroute}{#1}{#2}}
+\renewcommand{\CXmainroute}{../../lib/main}
+\renewcommand{\CXtempoutroute}{/tmp/CXtempout.tex}
+\renewcommand{\CXtemperrroute}{/tmp/CXtemperr.tex}
+\renewcommand{\CXhost}{localhost:8910}
+% \newcommand{\noderun}[2]{\noderunscript{\CXmainroute}{#1}{#2}}
 
 % ##########################################################################################################
 \begin{document}
+\begin{jzrplain}
 % \linenumbers
 
 \CX
 
 \clearpage%\mbox{}\clearpage
 
-\section{Introduction}
-% \label{somelabel}
+\section{Introduction}\label{intro}
 % \lipsum[1]
 
 (1) The original technique to execute an arbitrary command:
-
 \begin{verbatim}
 \immediate\write18{node
-  "\coffeexelatexroute"
+  "\CXmainroute"
   "\currfilepath"
   "helo"
   "readers (one)"
@@ -35,10 +61,9 @@
 \end{verbatim}
 
 (2) With ugly details largely hidden, the \verb#\exec{}# command is still fully general:
-
 \begin{verbatim}
 \exec{node
-  "\coffeexelatexroute"
+  "\CXmainroute"
   "\currfilepath"
   "helo"
   "readers (two)"}
@@ -46,10 +71,9 @@
 
 (3) \verb#\noderunscript{}# will execute NodeJS code that adheres to the call convention established by
 \CX:
-
 \begin{verbatim}
 \noderunscript
-  {\coffeexelatexroute}
+  {\CXmainroute}
   {\currfilepath}
   {helo}
   {readers (three)}
@@ -57,7 +81,6 @@
 
 (4) Like the previous example, but with standard values assumed as shown above. This is the form that you
 will want to use most of the time:
-
 \begin{verbatim}
 \noderun{helo}{readers (four)}
 \end{verbatim}
@@ -65,16 +88,35 @@ will want to use most of the time:
 
 {\textbf{Outputs:}}
 
-\immediate\write18{node "\coffeexelatexroute" "\currfilepath" "helo" "readers (one)" > /tmp/temp.dat}\input{/tmp/temp.dat}
+\immediate\write18{node "\CXmainroute" "\currfilepath" "helo" "readers (one)" > /tmp/temp.dat}\input{/tmp/temp.dat}
 
-\exec{node "\coffeexelatexroute" "\currfilepath" "helo" "readers (two)"}
+\exec{node "\CXmainroute" "\currfilepath" "helo" "readers (two)"}
 
-\noderunscript{\coffeexelatexroute}{\currfilepath}{helo}{readers (three)}
+\noderunscript{\CXmainroute}{\currfilepath}{helo}{readers (three)}
 
 \noderun{helo}{readers (four)}
 
 \clearpage
-\section{Geometry}
+\section{Configuration}\label{config}
+
+To use \CX, put
+\begin{verbatim}
+\usepackage{coffeexelatex}
+\end{verbatim}
+into the header section of your \LaTeX\ file.
+
+You may also want to include these lines in your \LaTeX\ document; these define, respectively, the route
+to the \CX\ executable (\verb#coffeexelatex/lib/main.js#) and the temporary file that is used to communicate
+between \TeX\ and your scripts (relative routes are resolved with respect to the current working directory,
+so if you set a relative route, you must always run \TeX\ from within the same directory):
+\begin{verbatim}
+\renewcommand{\CXmainroute}{../../lib/main}
+\renewcommand{\CXtempoutroute}{/tmp/coffeexelatex.tex}
+\end{verbatim}
+
+
+\clearpage
+\section{Geometry}\label{geo}
 
 % Write arbitrary text into the aux file:
 \auxc{this line goes to the aux file}
@@ -91,56 +133,134 @@ we conveniently allow dashes to make things easier. The \CX\ command \verb#show-
 not take arguments, which is why the second pair of braces has been left empty:
 
 {\textbf{Command:}}
-
-\verb#\noderun{show-geometry}{}#\par
+\begin{verbatim}
+\noderun{show-geometry}{}
+\end{verbatim}
 
 {\textbf{Output:}}
 
 \noderun{show-geometry}{}
 
 \clearpage
-\section{Character Escaping}
+\section{Character Escaping}\label{esc}
 The \CX\ command \verb#show-special-chrs# demonstrates that it is easy to include \TeX\ special characters
 in the return value. The simple rule is that whenever the output of a command is meant to be understood
 literally, it should be \verb#@escape#d:
 
 {\textbf{Command:}}
 
-\verb#\noderun{show-special-chrs}{}#
+\begin{verbatim}
+\noderun{show-special-chrs}{}
+\end{verbatim}
 
 {\textbf{Output:}}
 
 \noderun{show-special-chrs}{}
 
+\clearpage
+\section{The \texttt{aux} Object}\label{aux}
 
 
 
-% \auxcs{ foo: \{ bar: 'baz' \} }
+\subsection{Labels}\label{labels}
 
-% \auxcs{
-%   "page-nr":      \thepage,
-%   jobname:        "\jobname"
-%   }
-% \auxcs{ "just a text" }
+\CX\ will try and collect all labels from the \verb#*.aux# file associated with the current job; from
+inside your scripts X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X
 
-% x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x
-% x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x
-% x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x
-% x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x
-% \noderun{page-and-line-nr}{\thepage,\thelinenumber}
+{\textbf{Command:}}
 
-% \textbackslash{}pageref\{somelabel\}: \pageref{somelabel}
+\begin{verbatim}
+\noderun{show-aux}{}
+\end{verbatim}
 
-% \textbackslash{}ref\{somelabel\}: \ref{somelabel}
+{\textbf{Output:}}
 
-% Also see section \ref{otherlabel}, '\nameref{otherlabel}', on page \pageref{otherlabel}
+{\fontsize{3mm}{3mm}\noderun{show-aux}{}}
 
-% \noderun{escape}{\noexpand\currfilename}\currfilename
+\subsection{Evaluating Expressions}\label{evalcs}
 
-% \clearpage
-% \section{References}
-% \label{otherlabel}
+The commands \verb#\evalcs{}# and \verb#\evaljs{}# allow you to evaluate an arbitrary self-contained
+expression, written either in CoffeeScript or in JavaScript:
 
+{\textbf{Command:}}
+
+\begin{verbatim}
+$23 + 65 * 123 = \evalcs{23 + 65 * 123}$
+\end{verbatim}
+
+{\textbf{Output:}}
+
+$23 + 65 * 123 = \evalcs{23 + 65 * 123}$
+
+
+\clearpage
+\section{Curl}\label{curl}
+
+% \newcounter{char}
+% \setcounter{char}{1}
+
+% \loop\ifnum\value{char}<27
+% \edef\c{\Alph{char}}
+% \expandafter\expandafter\expandafter\expandafter\expandafter\expandafter\expandafter\def\expandafter\expandafter\expandafter\csname\expandafter\expandafter\expandafter b\expandafter\c\expandafter\endcsname\expandafter{\expandafter\mathbb\expandafter{\c}}
+% \addtocounter{char}{1}
+% \repeat
+
+
+
+\urlescape{abcd/efgh\%foo\#bar baz}
+
+\urlescape{Li YongQiang}
+
+
+\newcommand{\curl}[4]{%
+  \execdebug{curl --silent --show-error #1 #2/#3#4}
+  }
+
+% \execdebug{curl -s 127.0.0.1:8910/foobar.tex/helo/\urlescape{Li YongQiang}}
+
+% \newfontfamily\cjkIdeographFont{Sun-ExtA}
+
+\execdebug{curl --silent --show-error 127.0.0.1:8910/foobar.tex/helo/黎永強}
+
+\curl{}{127.0.0.1:8911}{foobar.tex/helo/}{黎永強}
+
+% \CXdebug
+% \verbatiminput{\CXtemperrroute}
+
+% \CXiffileempty{\CXtemperrroute}%
+%   {\CXiffileempty{\CXtempoutroute}%
+%     {}%
+%     {\verbatiminput{\CXtempoutroute}}}%
+%   {{\color{red}\verbatiminput{\CXtemperrroute}}}
+
+\CXtemperrroute\ is \CXiffileempty{\CXtemperrroute}{indeed}{not} empty.
+\CXtempoutroute\ is \CXiffileempty{\CXtempoutroute}{indeed}{not} empty.
+
+
+% \CXdebug
+
+% \newread\reader
+
+% \def\eolmarker{\par}
+
+% \def\testifempty#1{%
+% \openin\reader=#1\relax
+% \ifeof\reader
+%     \message{^^J#1: doesn't exist^^J}%
+% \else
+%     \read\reader to \readmacro
+%     \ifeof\reader
+%         \ifx\readmacro\eolmarker
+%             \message{^^J#1: is empty^^J}%
+%         \else
+%             \message{^^J#1: is not empty^^J}%
+%         \fi
+%     \else
+%         \message{^^J#1: is not empty^^J}%
+%     \fi
+% \fi
+% \closein\reader
+% }
 
 % currfiledir: \currfiledir
 
@@ -155,4 +275,5 @@ literally, it should be \verb#@escape#d:
 % \jobname
 
 % ##########################################################################################################
+\end{jzrplain}
 \end{document}

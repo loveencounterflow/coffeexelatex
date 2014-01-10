@@ -8,7 +8,7 @@
 njs_fs                    = require 'fs'
 njs_path                  = require 'path'
 #...........................................................................................................
-BAP                       = require 'coffeenode-bitsnpieces'
+# BAP                       = require 'coffeenode-bitsnpieces'
 TYPES                     = require 'coffeenode-types'
 TRM                       = require 'coffeenode-trm'
 rpr                       = TRM.rpr.bind TRM
@@ -22,8 +22,8 @@ help                      = TRM.get_logger 'help',      badge
 _echo                     = TRM.echo.bind TRM
 #...........................................................................................................
 eventually                = process.nextTick
-coffee                    = require 'coffee-script'
 Line_by_line              = require 'line-by-line'
+
 
 #-----------------------------------------------------------------------------------------------------------
 # Object to represent entries in (a copy of) the `*.aux` file:
@@ -50,7 +50,7 @@ Line_by_line              = require 'line-by-line'
   info "©45 argv: #{rpr process.argv}"
   texroute    = process.argv[ 2 ]
   command     = process.argv[ 3 ]
-  parameter   = process.argv[ 4 ]
+  parameter   = process.argv[ 4 ] ? ''
   ### TAINT we naïvely split on comma, which is not robust in case e.g. string or list literals contain
   that character. Instead, we should be doing parsing (eg. using JSON? CoffeeScript expressions /
   signatures?) ###
@@ -96,7 +96,9 @@ Line_by_line              = require 'line-by-line'
       return String.fromCharCode parseInt $1, 16
     #.......................................................................................................
     ### Compiling and evaluating CoffeeScript: ###
+    coffee = null
     if ( match = line.match @read_aux.coffeescript_matcher )?
+      coffee ?= require 'coffee-script'
       try
         source  = coffee.compile match[ 1 ], 'bare': yes, 'filename': auxroute
         x       = eval source
@@ -138,7 +140,8 @@ Line_by_line              = require 'line-by-line'
       for name, value of g
         value += one_inch if name is 'voffset'
         value += one_inch if name is 'hoffset'
-        g[ name ] = value / 27597261 * 148.5
+        # g[ name ] = value / 27597261 * 148.5
+        g[ name ] = ( Math.round value / 39158276 * 210 * 10000 + 0.5 ) / 10000
       g[ 'firstlinev' ] = g[ 'voffset' ] + g[ 'topmargin' ] + g[ 'headsep' ] + g[ 'headheight' ]
   #.........................................................................................................
   return null
@@ -191,7 +194,11 @@ Line_by_line              = require 'line-by-line'
 #-----------------------------------------------------------------------------------------------------------
 @debug = ( message ) ->
   return echo() unless message?
-  echo "\\textbf{\\textcolor{red}{#{@escape message.replace /\n+/g, '\\par\\n\\n' }}}"
+  return @_pen_debug message
+
+#-----------------------------------------------------------------------------------------------------------
+@_pen_debug = ( message ) ->
+  return "\\textbf{\\textcolor{red}{#{@escape message.replace /\n+/g, '\\par\\n\\n' }}}"
 
 #-----------------------------------------------------------------------------------------------------------
 @echo = ( P... ) ->
@@ -230,10 +237,11 @@ echo  = @echo.bind @
   for name in names
     value = g[ name ]
     value = if value? then ( ( value.toFixed 2 ).concat ' mm' ) else './.'
+    value = value.replace /-/g, '–'
     R.push "#{name} & #{value}"
   #.........................................................................................................
   R = R.join '\\\\\n'
-  R = "\\begin{tabular}{ l | r }\n#{R}\\\n\\end{tabular}"
+  R = "\\begin{tabular}{ | l | r | }\n\\hline\n#{R}\\\\\n\\hline\\end{tabular}"
   return R
 
 #-----------------------------------------------------------------------------------------------------------
@@ -252,9 +260,13 @@ echo  = @echo.bind @
   R = []
   R.push "#{name} & #{@escape chr}" for name, chr of chr_by_names
   R = R.join '\\\\\n'
-  R = "\\begin{tabular}{ l | c }\n#{R}\\\n\\end{tabular}"
+  R = "\\begin{tabular}{ | l | c | }\n\\hline\n#{R}\\\\\n\\hline\n\\end{tabular}"
   #.........................................................................................................
   return R
+
+#-----------------------------------------------------------------------------------------------------------
+@show_aux = ->
+  return "\\begin{verbatim}#{rpr @aux}\\end{verbatim}"
 
 
 #===========================================================================================================
@@ -282,11 +294,15 @@ echo  = @echo.bind @
     R = R.replace matcher, replacement
   return R
 
+
+#===========================================================================================================
+# HTTP SERVER
+#-----------------------------------------------------------------------------------------------------------
+
+
 ############################################################################################################
-@main()
-# @read_aux '/Volumes/Storage/cnd/node_modules/coffeexelatex/examples/example-1/example-1.aux', ( error, aux ) ->
-#   throw error if error?
-#   info '©34d', aux
+@main() if process.argv.length > 2
+
 
 
 

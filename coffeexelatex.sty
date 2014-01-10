@@ -12,9 +12,19 @@
 \usepackage[usenames,dvipsnames,svgnames,table]{xcolor}
 \usepackage{currfile}
 \usepackage{xltxtra}
+\usepackage{xstring}
+% \usepackage{catchfile}
+\usepackage{verbatim}
+% \input binhex
+% turn a character into its Unicode hexadecimal CID:
+% \newcounter{x}
+% \setcounter{x}{`\ろ}\nhex{2}{\thex}
 % \usepackage{geometry}
 % \usepackage{fp}
 % \usepackage{fltpoint}
+
+% ##########################################################################################################
+\makeatletter
 
 % ==========================================================================================================
 % LOGO
@@ -23,13 +33,78 @@
 
 
 % ==========================================================================================================
+% ACCESS POINTS
+% ----------------------------------------------------------------------------------------------------------
+% These commands define (1) the routes to the `coffeexelatex/src/main.js` JavaScript module, (2) the routes
+% to the temporary files that capture `stdout` and `stderr` of command line invocations, and (3) the host
+% name and port where the CoffeeXeLaTeX server is listening.
+%
+% The route setup here works in case you want to compile one of the examples from the CoffeeXeLaTeX distro
+% from within their respective directories. In the general case, you will have to adjust the path so NodeJS
+% knows where to find the script; use something along the lines of
+%
+%     \renewcommand{\CXmainroute}{route/to/main}
+%
+% in your `.tex` document to do that.
+%
+\newcommand{\CXmainroute}{../../lib/main}
+\newcommand{\CXtempoutroute}{/tmp/CXtempout.tex}
+\newcommand{\CXtemperrroute}{/tmp/CXtemperr.tex}
+\newcommand{\CXhost}{localhost:8910}
+
+% \catcode27=11
+% ==========================================================================================================
+% HELPERS
+% ----------------------------------------------------------------------------------------------------------
+\newcommand{\CXdebug}{%
+  % \CXiffileempty{\CXtemperrroute}{no errors.}{\color{red}{\textbf \verbatiminput{\CXtemperrroute}}}}
+  % \CXiffileempty{\CXtemperrroute}{no errors.}{\verbatiminput{\CXtemperrroute}}}
+  \CXiffileempty{\CXtemperrroute}%
+    {\CXiffileempty{\CXtempoutroute}%
+      {}%
+      {\input{\CXtempoutroute}}}%
+    {{\color{red}\verbatiminput{\CXtemperrroute}}}}
+
+% ----------------------------------------------------------------------------------------------------------
+% Check whether file is empty; thx to https://groups.google.com/forum/#!topic/comp.text.tex/bzsDBa4_Ooc
+%
+% \makeatletter
+\newcommand*\CXiffileempty[3]{%
+    \openin\@inputcheck#1 %
+    \ifeof\@inputcheck
+        #2\relax
+    \else
+        \read\@inputcheck to \reserved@a
+        \ifeof\@inputcheck
+            \typeout{#1 empty}%
+            #2\relax
+        \else
+            #3\relax
+        \fi
+    \fi
+    \closein\@inputcheck
+}
+% \makeatother
+
+
+% ==========================================================================================================
 % CORE COMMANDS
 % ----------------------------------------------------------------------------------------------------------
 \newcommand{\exec}[1]{%
-  \immediate\write18{#1 > /tmp/coffeexelatex.tex}\input{/tmp/coffeexelatex.tex}}
+  \def\CXlastcommand{#1 > "\CXtempoutroute" 2> "\CXtemperrroute"}%
+  \auxc{* CoffeeXeLaTeX command: \CXlastcommand}%
+  \immediate\write18{\CXlastcommand}\input{\CXtempoutroute}}
 
 % ----------------------------------------------------------------------------------------------------------
-\newcommand{\nodeeval}[1]{`node -p "$_[0]"`}
+\newcommand{\execdebug}[1]{%
+  \def\CXlastcommand{#1 > "\CXtempoutroute" 2> "\CXtemperrroute"}%
+  \auxc{* CoffeeXeLaTeX command: \CXlastcommand}%
+  % \immediate\write18{\CXlastcommand}\input{\CXtempoutroute}}
+  \immediate\write18{\CXlastcommand}\CXdebug}
+
+% ----------------------------------------------------------------------------------------------------------
+\newcommand{\evaljs}[1]{\exec{node -p "#1"}}
+\newcommand{\evalcs}[1]{\exec{coffee -e "console.log #1"}}
 
 % ----------------------------------------------------------------------------------------------------------
 % A full CoffeeXeLaTeX invocation with `\noderunscript` takes four parameters:
@@ -50,21 +125,9 @@
 % * the name of the method to execute;
 % * a list of comma-separated arguments.
 %
-% The route to the dispatcher will be taken from the `\coffeexelatexroute` macro.
+% The route to the dispatcher will be taken from the `\CXmainroute` macro.
 %
-\newcommand{\noderun}[2]{\noderunscript{\coffeexelatexroute}{\currfilepath}{#1}{#2}}
-
-% ----------------------------------------------------------------------------------------------------------
-% This command defines the route to the `coffeexelatex/src/main.js` JavaScript module (without the `.js`).
-% The route setup here works in case you want to compile one of the examples from the CoffeeXeLaTeX distro
-% from within the respective directories; in the general case, you will have to adjust the path so NodeJS
-% knows where to find the script; use something along the lines of
-%
-%     \renewcommand{\coffeexelatexroute}{route/to/main}
-%
-% in your `.tex` document to do that.
-%
-\newcommand{\coffeexelatexroute}{../../lib/main}
+\newcommand{\noderun}[2]{\noderunscript{\CXmainroute}{\currfilepath}{#1}{#2}}
 
 % ==========================================================================================================
 % WRITING TO THE `.AUX` FILE
@@ -107,14 +170,14 @@
 % is a real-world example for `\auxpod{}` usage.
 %
 % thx to http://tex.stackexchange.com/a/115933/28067 for the `\write\@auxout` part.
-\makeatletter
+% \makeatletter
 \catcode`\%=11
 \newcommand{\aux}[1]{\immediate\write\@auxout{#1}}
 \newcommand{\auxc}[1]{\immediate\write\@auxout{^^25 #1}}
 \newcommand{\auxcs}[1]{\immediate\write\@auxout{^^25 coffee #1}}
 \newcommand{\auxpod}[2]{\immediate\write\@auxout{^^25 coffee #1: \{ #2 \}}}
 \catcode`\%=14
-\makeatother
+% \makeatother
 
 % ----------------------------------------------------------------------------------------------------------
 % The `\auxgeo` command may be called after `\begin{document}`; it writes a number of raw layout dimensions
@@ -149,5 +212,48 @@
   }}
 
 
+% ==========================================================================================================
+% WRITING TO THE `.AUX` FILE
+% ----------------------------------------------------------------------------------------------------------
+% The `\urlescape` command escapes a string so it can be safely used as an argument e.g. to the command line
+% `curl` command. The characters deemed as 'unsafe' here have been gleaned from
+% http://perishablepress.com/stop-using-unsafe-characters-in-urls/; in practice the list could probably be
+% shortened somewhat.
+%
+% thx to http://tex.stackexchange.com/a/153217/28067 for this beautiful solution
+% \makeatletter
+\newcommand{\@urlescapestep}[2]{%
+  \expandafter\StrSubstitute\expandafter{\x}{#1}{#2}[\x]%
+  }
+\newcommand{\urlescape}[1]{{%
+  \noexpandarg % suppress expansions made by xstring
+  \StrSubstitute{#1}{\%}{\%25}[\x]% first step
+  \@urlescapestep{/}{\%2F}%
+  \@urlescapestep{\&}{\%26}%
+  \@urlescapestep{ }{\%20}%
+  \@urlescapestep{\$}{\%24}%
+  \@urlescapestep{+}{\%2b}%
+  \@urlescapestep{,}{\%2c}%
+  \@urlescapestep{:}{\%3a}%
+  \@urlescapestep{;}{\%3b}%
+  \@urlescapestep{?}{\%3f}%
+  \@urlescapestep{@}{\%40}%
+  \@urlescapestep{"}{\%22}%
+  \@urlescapestep{<}{\%3c}%
+  \@urlescapestep{>}{\%3e}%
+  \@urlescapestep{\#}{\%23}%
+  \@urlescapestep{\{}{\%7b}%
+  \@urlescapestep{\}}{\%7d}%
+  \@urlescapestep{|}{\%7c}%
+  \@urlescapestep{\^}{\%5e}%
+  \@urlescapestep{\~}{\%7e}%
+  \@urlescapestep{[}{\%5b}%
+  \@urlescapestep{]}{\%5d}%
+  \@urlescapestep{\`}{\%60}%
+  \x}}
+% \makeatother
+
+% ##########################################################################################################
+\makeatother
 
 
