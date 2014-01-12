@@ -30,7 +30,7 @@
 % ==========================================================================================================
 % LOGO
 % ----------------------------------------------------------------------------------------------------------
-\newcommand{\CX}{\textit{Coffee}\XeLaTeX}
+\newcommand{\CXLTX}{\textit{Coffee}\XeLaTeX}
 
 
 % ==========================================================================================================
@@ -44,34 +44,34 @@
 % from within their respective directories. In the general case, you will have to adjust the path so NodeJS
 % knows where to find the script; use something along the lines of
 %
-%     \renewcommand{\CXmainroute}{route/to/main}
+%     \renewcommand{\CXLTXmainroute}{route/to/main}
 %
 % in your `.tex` document to do that.
 %
-\newcommand{\CXmainroute}{../../lib/main}
-\newcommand{\CXtempoutroute}{/tmp/CXtempout.tex}
-\newcommand{\CXtemperrroute}{/tmp/CXtemperr.tex}
-\newcommand{\CXhost}{localhost:8910}
+\newcommand{\CXLTXmainroute}{../../lib/main}
+\newcommand{\CXLTXtempoutroute}{/tmp/CXLTXtempout.tex}
+\newcommand{\CXLTXtemperrroute}{/tmp/CXLTXtemperr.tex}
+\newcommand{\CXLTXhost}{localhost:8910}
 
 % \catcode27=11
 % ==========================================================================================================
 % HELPERS
 % ----------------------------------------------------------------------------------------------------------
 % Prints out errors
-\newcommand{\CXshowoutputanderrors}{%
-  \CXiffileempty{\CXtempoutroute}%
+\newcommand{\CXLTXshowoutputanderrors}{%
+  \CXLTXiffileempty{\CXLTXtempoutroute}%
     {}%
-    {\input{\CXtempoutroute}}
-  \CXiffileempty{\CXtemperrroute}%
+    {\input{\CXLTXtempoutroute}}
+  \CXLTXiffileempty{\CXLTXtemperrroute}%
     {}%
     {{\color{red}Errors have occurred:%
-      \verbatiminput{\CXtemperrroute}}}}
+      \verbatiminput{\CXLTXtemperrroute}}}}
 
 % ----------------------------------------------------------------------------------------------------------
 % Check whether file is empty; thx to https://groups.google.com/forum/#!topic/comp.text.tex/bzsDBa4_Ooc
 %
 % \makeatletter
-\newcommand*\CXiffileempty[3]{%
+\newcommand*\CXLTXiffileempty[3]{%
     \openin\@inputcheck#1 %
     \ifeof\@inputcheck
         #2\relax
@@ -102,19 +102,19 @@
 % CORE COMMANDS (NODE COMMAND LINE (NCL) MODEL)
 % ----------------------------------------------------------------------------------------------------------
 \newcommand{\exec}[1]{%
-  \def\CXlastcommand{#1 > "\CXtempoutroute" 2> "\CXtemperrroute"}%
-  \auxc{* CoffeeXeLaTeX command: \CXlastcommand}%
-  \immediate\write18{\CXlastcommand}\input{\CXtempoutroute}}
+  \def\CXLTXlastcommand{#1 > "\CXLTXtempoutroute" 2> "\CXLTXtemperrroute"}%
+  \auxc{* CoffeeXeLaTeX command: \CXLTXlastcommand}%
+  \immediate\write18{\CXLTXlastcommand}\input{\CXLTXtempoutroute}}
 
 % % ----------------------------------------------------------------------------------------------------------
 % \newcommand{\execdebug}[1]{%
-%   \immediate\write18{#1 > "\CXtempoutroute" 2> "\CXtemperrroute"}\CXshowoutputanderrors}
+%   \immediate\write18{#1 > "\CXLTXtempoutroute" 2> "\CXLTXtemperrroute"}\CXLTXshowoutputanderrors}
 
 % ----------------------------------------------------------------------------------------------------------
 \newcommand{\execdebug}[1]{%
-  \def\CXlastcommand{#1 > "\CXtempoutroute" 2> "\CXtemperrroute"}%
-  \auxc{* CoffeeXeLaTeX command: \CXlastcommand}%
-  \immediate\write18{\CXlastcommand}\CXshowoutputanderrors}
+  \def\CXLTXlastcommand{#1 > "\CXLTXtempoutroute" 2> "\CXLTXtemperrroute"}%
+  \auxc{* CoffeeXeLaTeX command: \CXLTXlastcommand}%
+  \immediate\write18{\CXLTXlastcommand}\CXLTXshowoutputanderrors}
 
 % ----------------------------------------------------------------------------------------------------------
 \newcommand{\evaljs}[1]{\exec{node -p "#1"}}
@@ -139,9 +139,9 @@
 % * the name of the method to execute;
 % * a list of comma-separated arguments.
 %
-% The route to the dispatcher will be taken from the `\CXmainroute` macro.
+% The route to the dispatcher will be taken from the `\CXLTXmainroute` macro.
 %
-\newcommand{\noderun}[2]{\noderunscript{\CXmainroute}{\currfilepath}{#1}{#2}}
+\newcommand{\noderun}[2]{\noderunscript{\CXLTXmainroute}{\currfilepath}{#1}{#2}}
 
 
 % ==========================================================================================================
@@ -178,9 +178,9 @@
 %   #2: arguments
 %
 \newcommand{\curl}[2]{%
-  \curlEscape{\CXhost}{\currfilepath}{#1}{#2}}
+  \curlEscape{\CXLTXhost}{\currfilepath}{#1}{#2}}
 % \newcommand{\curl}[3][]{%
-%   \curlEscape[#3]{\CXhost}{\currfilepath}{/#1}/{#2}}
+%   \curlEscape[#3]{\CXLTXhost}{\currfilepath}{/#1}/{#2}}
 
 
 % ----------------------------------------------------------------------------------------------------------
@@ -197,6 +197,8 @@
   \catcode`\$=12
   \catcode`\^=12
   \catcode`\~=12
+  }{\endgroup}
+
   % These are not going to work:
   % \catcode`\&=12
   % \catcode`\#=12
@@ -204,9 +206,6 @@
   % \catcode`\}=12
   % \catcode`\`=12
   % ... more critical characters ...
-  }%
-  % ........................................................................................................
-  {\endgroup}
 
 % \newcommand{UUU}{%
 %   \begingroup%
@@ -392,7 +391,6 @@
   \urlescapestep{\~}{%7e}
   \urlescapestep{[}{%5b}
   \urlescapestep{]}{%5d}
-  % \urlescapestep{\`}{%60}
   \urlescapestep{`}{%60}
   \urlescapestep{'}{%27}
   \global\let\urlescapecurrent=\x}}

@@ -29,21 +29,28 @@ server_options =
   'port':         8910
 
 #-----------------------------------------------------------------------------------------------------------
-@decode_url_crumb = ( crumb ) ->
+# @decode_url_crumb = ( crumb ) ->
+#   ### The `Buffer ... toString` steps below decode literal UTF-8 in the request ###
+#   ### TAINT the NodeJS docs say: [the 'binary'] encoding method is deprecated and should be avoided
+#     [...] [it] will be removed in future versions of Node ###
+#   try
+#     R = decodeURIComponent crumb
+#   catch error
+#     throw error unless ( message = error[ 'message' ] ) is 'URI malformed'
+#     warn '©43e', ( rpr crumb ), message
+#     R = message
+#   #.........................................................................................................
+#   R = R.replace /\++/g, ' '
+#   R = ( new Buffer R, 'binary' ).toString 'utf-8'
+#   #.........................................................................................................
+#   return R
+
+#-----------------------------------------------------------------------------------------------------------
+@decode_unicode = ( text ) ->
   ### The `Buffer ... toString` steps below decode literal UTF-8 in the request ###
   ### TAINT the NodeJS docs say: [the 'binary'] encoding method is deprecated and should be avoided
     [...] [it] will be removed in future versions of Node ###
-  try
-    R = decodeURIComponent crumb
-  catch error
-    throw error unless ( message = error[ 'message' ] ) is 'URI malformed'
-    warn message
-    R = message
-  #.........................................................................................................
-  R = R.replace /\++/g, ' '
-  R = ( new Buffer R, 'binary' ).toString 'utf-8'
-  #.........................................................................................................
-  return R
+  return ( new Buffer text, 'binary' ).toString 'utf-8'
 
 #-----------------------------------------------------------------------------------------------------------
 @main = ->
@@ -66,13 +73,15 @@ server_options =
     unless texroute? and command? # and parameters?
       return handler "need 2 or 3 parts in URL route"
     #.......................................................................................................
-    texroute    = @decode_url_crumb texroute
-    command     = @decode_url_crumb command
+    # texroute    = @decode_url_crumb texroute
+    # command     = @decode_url_crumb command
     method_name = command.replace /-/g, '_'
     #.......................................................................................................
     ### TAINT code duplication ###
     ### This should perhaps be done with slashes as well ###
-    P = if parameters? and parameters.length > 0 then ( @decode_url_crumb parameters ).split ',' else []
+    # P = if parameters? and parameters.length > 0 then ( @decode_url_crumb parameters ).split ',' else []
+    P = if parameters? and parameters.length > 0 then ( @decode_unicode parameters ).split ',' else []
+    debug '©45f P:          ', P
     #.......................................................................................................
     CXLTX.dispatch texroute, method_name, P..., handler
     #.......................................................................................................
