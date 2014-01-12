@@ -15,6 +15,7 @@
 \usepackage{xstring}
 % \usepackage{catchfile}
 \usepackage{verbatim}
+\usepackage{actcodes} % for `\MakeOther`
 % \input binhex
 % turn a character into its Unicode hexadecimal CID:
 % \newcounter{x}
@@ -56,14 +57,15 @@
 % ==========================================================================================================
 % HELPERS
 % ----------------------------------------------------------------------------------------------------------
-\newcommand{\CXdebug}{%
-  % \CXiffileempty{\CXtemperrroute}{no errors.}{\color{red}{\textbf \verbatiminput{\CXtemperrroute}}}}
-  % \CXiffileempty{\CXtemperrroute}{no errors.}{\verbatiminput{\CXtemperrroute}}}
+% Prints out errors
+\newcommand{\CXshowoutputanderrors}{%
+  \CXiffileempty{\CXtempoutroute}%
+    {}%
+    {\input{\CXtempoutroute}}
   \CXiffileempty{\CXtemperrroute}%
-    {\CXiffileempty{\CXtempoutroute}%
-      {}%
-      {\input{\CXtempoutroute}}}%
-    {{\color{red}\verbatiminput{\CXtemperrroute}}}}
+    {}%
+    {{\color{red}Errors have occurred:%
+      \verbatiminput{\CXtemperrroute}}}}
 
 % ----------------------------------------------------------------------------------------------------------
 % Check whether file is empty; thx to https://groups.google.com/forum/#!topic/comp.text.tex/bzsDBa4_Ooc
@@ -76,7 +78,7 @@
     \else
         \read\@inputcheck to \reserved@a
         \ifeof\@inputcheck
-            \typeout{#1 empty}%
+            % \typeout{#1 empty}%
             #2\relax
         \else
             #3\relax
@@ -85,22 +87,34 @@
     \closein\@inputcheck
 }
 % \makeatother
+% test for empty arguments:
+% \newcommand{\testempty}[2][]{%
+% \if\relax\detokenize{#2}\relax%
+%      no optional argument given%
+%    \else%
+%      optional argument was: #2%
+%    \fi%
+% }
+
 
 
 % ==========================================================================================================
-% CORE COMMANDS
+% CORE COMMANDS (NODE COMMAND LINE (NCL) MODEL)
 % ----------------------------------------------------------------------------------------------------------
 \newcommand{\exec}[1]{%
   \def\CXlastcommand{#1 > "\CXtempoutroute" 2> "\CXtemperrroute"}%
   \auxc{* CoffeeXeLaTeX command: \CXlastcommand}%
   \immediate\write18{\CXlastcommand}\input{\CXtempoutroute}}
 
+% % ----------------------------------------------------------------------------------------------------------
+% \newcommand{\execdebug}[1]{%
+%   \immediate\write18{#1 > "\CXtempoutroute" 2> "\CXtemperrroute"}\CXshowoutputanderrors}
+
 % ----------------------------------------------------------------------------------------------------------
 \newcommand{\execdebug}[1]{%
   \def\CXlastcommand{#1 > "\CXtempoutroute" 2> "\CXtemperrroute"}%
   \auxc{* CoffeeXeLaTeX command: \CXlastcommand}%
-  % \immediate\write18{\CXlastcommand}\input{\CXtempoutroute}}
-  \immediate\write18{\CXlastcommand}\CXdebug}
+  \immediate\write18{\CXlastcommand}\CXshowoutputanderrors}
 
 % ----------------------------------------------------------------------------------------------------------
 \newcommand{\evaljs}[1]{\exec{node -p "#1"}}
@@ -129,6 +143,92 @@
 %
 \newcommand{\noderun}[2]{\noderunscript{\CXmainroute}{\currfilepath}{#1}{#2}}
 
+
+% ==========================================================================================================
+% CORE COMMANDS (HTTP MODEL)
+% ----------------------------------------------------------------------------------------------------------
+% `curlRaw` takes up to two arguments: the first optional one specifies options to cURL; the second,
+% mandatory one should be a URL to retrieve. The command uses `exec` to run
+% `curl --silent --show-error #1 #2`; the implicit options facilitate error handling.
+%
+% Arguments:
+%   #1: cURL options (optional)
+%   #2: full HTTP route of request; the `http://` part may be omitted
+%
+\newcommand{\curlRaw}[2][]{%
+  \execdebug{curl --silent --show-error #1 #2}}
+
+% ----------------------------------------------------------------------------------------------------------
+%
+% Arguments:
+%   #1: cURL options (optional)
+%   #2: host with port (e.g. `127.0.0.1:8910`)
+%   #3: route to `tex` file (used to retrieve `aux` file)
+%   #4: command
+%   #5: arguments
+%
+\newcommand{\curlEscape}[5][]{%
+  \urlescapeALPHA{#5}%
+  \exec{curl --silent --show-error #1 #2/#3/#4/\urlescapecurrent}}
+
+% ----------------------------------------------------------------------------------------------------------
+%
+% Arguments:
+%   #1: command
+%   #2: arguments
+%
+\newcommand{\curl}[2]{%
+  \curlEscape{\CXhost}{\currfilepath}{#1}{#2}}
+% \newcommand{\curl}[3][]{%
+%   \curlEscape[#3]{\CXhost}{\currfilepath}{/#1}/{#2}}
+
+
+% ----------------------------------------------------------------------------------------------------------
+% To make writing out URLs in TeX a bit easier, we define the `\begin{URL} ... \end{URL}` environment:
+% To avoid a name clash with the `hyperref` package, we use `URL` instead of `url`.
+\newenvironment{URL}%
+  % ........................................................................................................
+  {\begingroup%
+  % \endlinechar=-1
+  \MakeOther\~
+  \MakeOther\&
+  \MakeOther\#
+  \catcode`\%=12
+  \catcode`\$=12
+  \catcode`\^=12
+  \catcode`\~=12
+  % These are not going to work:
+  % \catcode`\&=12
+  % \catcode`\#=12
+  % \catcode`\{=12
+  % \catcode`\}=12
+  % \catcode`\`=12
+  % ... more critical characters ...
+  }%
+  % ........................................................................................................
+  {\endgroup}
+
+% \newcommand{UUU}{%
+%   \begingroup%
+%   % \catcode`\|=\active
+%   \scantokens\expandafter{#1\empty}\endgroup}
+
+\def\UUU#1{%
+  \begingroup
+%   % \endlinechar=-1
+  \catcode`\%=12
+  \catcode`\$=12
+  \catcode`\^=12
+  \catcode`\~=12
+%   % These are not going to work:
+%   % \catcode`\&=12
+%   % \catcode`\#=12
+%   % \catcode`\{=12
+%   % \catcode`\}=12
+%   % \catcode`\`=12
+  % \catcode`\|=\active
+  \scantokens\expandafter{#1\empty}%
+  \endgroup}
 % ==========================================================================================================
 % WRITING TO THE `.AUX` FILE
 % ----------------------------------------------------------------------------------------------------------
@@ -220,38 +320,83 @@
 % http://perishablepress.com/stop-using-unsafe-characters-in-urls/; in practice the list could probably be
 % shortened somewhat.
 %
+% NB: the first version of `\urlescape` did not coöperate all too well with `\write18` (because `\write`);
+% it has been replaced by the version further down.
+%
 % thx to http://tex.stackexchange.com/a/153217/28067 for this beautiful solution
-% \makeatletter
-\newcommand{\@urlescapestep}[2]{%
+% % \makeatletter
+% \newcommand{\@urlescapestep}[2]{%
+%   \expandafter\StrSubstitute\expandafter{\x}{#1}{#2}[\x]%
+%   }
+% \newcommand{\urlescape}[1]{{%
+%   \noexpandarg % suppress expansions made by xstring
+%   \StrSubstitute{#1}{\%}{\%25}[\x]% first step
+%   \@urlescapestep{/}{\%2F}%
+%   \@urlescapestep{\&}{\%26}%
+%   \@urlescapestep{ }{\%20}%
+%   \@urlescapestep{\$}{\%24}%
+%   \@urlescapestep{+}{\%2b}%
+%   \@urlescapestep{,}{\%2c}%
+%   \@urlescapestep{:}{\%3a}%
+%   \@urlescapestep{;}{\%3b}%
+%   \@urlescapestep{?}{\%3f}%
+%   \@urlescapestep{@}{\%40}%
+%   \@urlescapestep{"}{\%22}%
+%   \@urlescapestep{<}{\%3c}%
+%   \@urlescapestep{>}{\%3e}%
+%   \@urlescapestep{\#}{\%23}%
+%   \@urlescapestep{\{}{\%7b}%
+%   \@urlescapestep{\}}{\%7d}%
+%   \@urlescapestep{|}{\%7c}%
+%   \@urlescapestep{\^}{\%5e}%
+%   \@urlescapestep{\~}{\%7e}%
+%   \@urlescapestep{[}{\%5b}%
+%   \@urlescapestep{]}{\%5d}%
+%   \@urlescapestep{\`}{\%60}%
+%   \x}}
+% % \makeatother
+% ..........................................................................................................
+% alternative implementation of `\urlescape` as per
+% http://tex.stackexchange.com/a/153539/28067
+%
+% In the following group endlines do not produce spaces
+% and `%' becomes a printable character
+\newcommand{\urlescapestep}[2]{%
   \expandafter\StrSubstitute\expandafter{\x}{#1}{#2}[\x]%
   }
-\newcommand{\urlescape}[1]{{%
-  \noexpandarg % suppress expansions made by xstring
-  \StrSubstitute{#1}{\%}{\%25}[\x]% first step
-  \@urlescapestep{/}{\%2F}%
-  \@urlescapestep{\&}{\%26}%
-  \@urlescapestep{ }{\%20}%
-  \@urlescapestep{\$}{\%24}%
-  \@urlescapestep{+}{\%2b}%
-  \@urlescapestep{,}{\%2c}%
-  \@urlescapestep{:}{\%3a}%
-  \@urlescapestep{;}{\%3b}%
-  \@urlescapestep{?}{\%3f}%
-  \@urlescapestep{@}{\%40}%
-  \@urlescapestep{"}{\%22}%
-  \@urlescapestep{<}{\%3c}%
-  \@urlescapestep{>}{\%3e}%
-  \@urlescapestep{\#}{\%23}%
-  \@urlescapestep{\{}{\%7b}%
-  \@urlescapestep{\}}{\%7d}%
-  \@urlescapestep{|}{\%7c}%
-  \@urlescapestep{\^}{\%5e}%
-  \@urlescapestep{\~}{\%7e}%
-  \@urlescapestep{[}{\%5b}%
-  \@urlescapestep{]}{\%5d}%
-  \@urlescapestep{\`}{\%60}%
-  \x}}
-% \makeatother
+\begingroup
+\endlinechar=-1
+\catcode`\%=12
+\MakeOther\`
+\gdef\urlescapeALPHA#1{{
+  \noexpandarg
+  \StrSubstitute{#1}{%}{%25}[\x]
+  \urlescapestep{/}{%2F}
+  \urlescapestep{\&}{%26}
+  \urlescapestep{ }{%20}
+  \urlescapestep{\$}{%24}
+  \urlescapestep{+}{%2b}
+  \urlescapestep{,}{%2c}
+  \urlescapestep{:}{%3a}
+  \urlescapestep{;}{%3b}
+  \urlescapestep{?}{%3f}
+  \urlescapestep{@}{%40}
+  \urlescapestep{"}{%22}
+  \urlescapestep{<}{%3c}
+  \urlescapestep{>}{%3e}
+  \urlescapestep{\#}{%23}
+  \urlescapestep{\{}{%7b}
+  \urlescapestep{\}}{%7d}
+  \urlescapestep{|}{%7c}
+  \urlescapestep{\^}{%5e}
+  \urlescapestep{\~}{%7e}
+  \urlescapestep{[}{%5b}
+  \urlescapestep{]}{%5d}
+  % \urlescapestep{\`}{%60}
+  \urlescapestep{`}{%60}
+  \urlescapestep{'}{%27}
+  \global\let\urlescapecurrent=\x}}
+\endgroup
 
 % ##########################################################################################################
 \makeatother

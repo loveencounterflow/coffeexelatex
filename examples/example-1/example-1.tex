@@ -1,10 +1,10 @@
 
 % ##########################################################################################################
-\documentclass[a5paper]{article}
+\documentclass[a4paper]{article}
 \usepackage{lipsum}
 \usepackage[columnwise]{lineno}
 \usepackage{coffeexelatex}
-\usepackage[top=10mm]{geometry}
+\usepackage[top=15mm]{geometry}
 % \usepackage[headheight=10mm]{geometry}
 \usepackage{leading}
 \usepackage{parskip}
@@ -20,7 +20,7 @@
   \lineskiplimit=-10pt%
   \lineskip=0pt%
   \topskip=0pt%
-  % \setlength{\parskip}{4mm}%
+  \setlength{\parskip}{4mm}%
   \setlength{\parindent}{0mm}%
   % \fontsize{\nominalfontsize}{\gridstrutlength}%
   \leading{4mm}
@@ -96,8 +96,8 @@ will want to use most of the time:
 
 \noderun{helo}{readers (four)}
 
-\clearpage
-\section{Configuration}\label{config}
+% ==========================================================================================================
+\clearpage\section{Configuration}\label{config}
 
 To use \CX, put
 \begin{verbatim}
@@ -115,34 +115,35 @@ so if you set a relative route, you must always run \TeX\ from within the same d
 \end{verbatim}
 
 
-\clearpage
-\section{Geometry}\label{geo}
+% % ==========================================================================================================
+% \clearpage\section{Geometry}\label{geo}
 
-% Write arbitrary text into the aux file:
-\auxc{this line goes to the aux file}
+% % Write arbitrary text into the aux file:
+% \auxc{this line goes to the aux file}
 
-% Write geometry data into the aux file:
-\auxgeo
+% % Write geometry data into the aux file:
+% \auxgeo
 
-Use geometry data from aux file to render a table of layout dimensions into the document;
-note the we could have used the \verb#\auxgeo# command anywhere in the document and that
-this currently only works for documents with a single, constant layout.
+% Use geometry data from aux file to render a table of layout dimensions into the document;
+% note the we could have used the \verb#\auxgeo# command anywhere in the document and that
+% this currently only works for documents with a single, constant layout.
 
-Also note we're using a dash instead of an underscore here—in \TeX, underscores are special, so
-we conveniently allow dashes to make things easier. The \CX\ command \verb#show-geometry# does
-not take arguments, which is why the second pair of braces has been left empty:
+% Also note we're using a dash instead of an underscore here—in \TeX, underscores are special, so
+% we conveniently allow dashes to make things easier. The \CX\ command \verb#show-geometry# does
+% not take arguments, which is why the second pair of braces has been left empty:
 
-{\textbf{Command:}}
-\begin{verbatim}
-\noderun{show-geometry}{}
-\end{verbatim}
+% {\textbf{Command:}}
+% \begin{verbatim}
+% \noderun{show-geometry}{}
+% \end{verbatim}
 
-{\textbf{Output:}}
+% {\textbf{Output:}}
 
-\noderun{show-geometry}{}
+% \noderun{show-geometry}{}
 
-\clearpage
-\section{Character Escaping}\label{esc}
+% ==========================================================================================================
+\clearpage\section{Character Escaping}\label{esc}
+
 The \CX\ command \verb#show-special-chrs# demonstrates that it is easy to include \TeX\ special characters
 in the return value. The simple rule is that whenever the output of a command is meant to be understood
 literally, it should be \verb#@escape#d:
@@ -157,15 +158,17 @@ literally, it should be \verb#@escape#d:
 
 \noderun{show-special-chrs}{}
 
-\clearpage
-\section{The \texttt{aux} Object}\label{aux}
+
+% ==========================================================================================================
+\clearpage\section{The \texttt{aux} Object}\label{aux}
 
 
 
+% ----------------------------------------------------------------------------------------------------------
 \subsection{Labels}\label{labels}
 
 \CX\ will try and collect all labels from the \verb#*.aux# file associated with the current job; from
-inside your scripts X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X
+inside your scripts 〓 〓 〓 〓 〓 〓 〓 〓 〓 〓 〓 〓 〓 〓 〓 〓 〓 〓 〓
 
 {\textbf{Command:}}
 
@@ -177,6 +180,8 @@ inside your scripts X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X 
 
 {\fontsize{3mm}{3mm}\noderun{show-aux}{}}
 
+
+% ----------------------------------------------------------------------------------------------------------
 \subsection{Evaluating Expressions}\label{evalcs}
 
 The commands \verb#\evalcs{}# and \verb#\evaljs{}# allow you to evaluate an arbitrary self-contained
@@ -193,86 +198,51 @@ $23 + 65 * 123 = \evalcs{23 + 65 * 123}$
 $23 + 65 * 123 = \evalcs{23 + 65 * 123}$
 
 
-\clearpage
-\section{Curl}\label{curl}
+% ==========================================================================================================
+\clearpage\section{Curl}\label{curl}
 
-% \newcounter{char}
-% \setcounter{char}{1}
 
-% \loop\ifnum\value{char}<27
-% \edef\c{\Alph{char}}
-% \expandafter\expandafter\expandafter\expandafter\expandafter\expandafter\expandafter\def\expandafter\expandafter\expandafter\csname\expandafter\expandafter\expandafter b\expandafter\c\expandafter\endcsname\expandafter{\expandafter\mathbb\expandafter{\c}}
-% \addtocounter{char}{1}
-% \repeat
+\begin{verbatim}
+\curlRaw{127.0.0.1:8910/foobar.tex/helo/friends}
+\end{verbatim}
+\curlRaw{127.0.0.1:8910/foobar.tex/helo/friends}
 
 
 
-\urlescape{abcd/efgh\%foo\#bar baz}
+% ----------------------------------------------------------------------------------------------------------
+\subsection{The URL environment}\label{urlenv}
 
-\urlescape{Li YongQiang}
+Typing URLs in \LaTeX\ can be quite a chore, given the number of active and otherwise `special' characters
+to take care of: not only does \TeX\ itself define some special characters, not only do the RFCs that govern
+URL syntax consider 〓 〓 〓 〓 〓 〓 〓 〓 〓 〓 〓 〓 〓 〓 〓 〓 〓 〓 〓 special—when we communicate with our \CX\ server,
+we do so by executing a `curl ...` command via the OS shell (normally \verb#sh#), which again has its own
+rich set of specials. In order to alleviate the burden on the casual user, we define a new environment,
+`URL`, that somewhat simplifies writing (parts of) URLs:
+
+\begin{verbatim}
+\begin{URL}
+\curl{helo}{`\{ [ $ ~ % \# ^ | \} ] '?}
+\end{URL}
+\end{verbatim}
+\begin{URL}
+\curl{helo}{`\{ [ $ ~ % \# ^ | \} ] '?}
+\end{URL}
+
+% \begin{verbatim}
+% \begin{URL}
+% \curl{helo}{B \& C % Dollar: $ hash: \# caret: ^ wave:~ backtick: \` }
+% \end{URL}
+% \end{verbatim}
+% \begin{URL}
+% \curl{helo}{B \& C % Dollar: $ hash: \# caret: ^ wave:~ backtick: \` }
+% \end{URL}
+
+% \usepackage{textcomp} \textquotesingle \textasciigrave
 
 
-\newcommand{\curl}[4]{%
-  \execdebug{curl --silent --show-error #1 #2/#3#4}
-  }
+% \CXtemperrroute\ is \CXiffileempty{\CXtemperrroute}{indeed}{not} empty.
+% \CXtempoutroute\ is \CXiffileempty{\CXtempoutroute}{indeed}{not} empty.
 
-% \execdebug{curl -s 127.0.0.1:8910/foobar.tex/helo/\urlescape{Li YongQiang}}
-
-% \newfontfamily\cjkIdeographFont{Sun-ExtA}
-
-\execdebug{curl --silent --show-error 127.0.0.1:8910/foobar.tex/helo/黎永強}
-
-\curl{}{127.0.0.1:8911}{foobar.tex/helo/}{黎永強}
-
-% \CXdebug
-% \verbatiminput{\CXtemperrroute}
-
-% \CXiffileempty{\CXtemperrroute}%
-%   {\CXiffileempty{\CXtempoutroute}%
-%     {}%
-%     {\verbatiminput{\CXtempoutroute}}}%
-%   {{\color{red}\verbatiminput{\CXtemperrroute}}}
-
-\CXtemperrroute\ is \CXiffileempty{\CXtemperrroute}{indeed}{not} empty.
-\CXtempoutroute\ is \CXiffileempty{\CXtempoutroute}{indeed}{not} empty.
-
-
-% \CXdebug
-
-% \newread\reader
-
-% \def\eolmarker{\par}
-
-% \def\testifempty#1{%
-% \openin\reader=#1\relax
-% \ifeof\reader
-%     \message{^^J#1: doesn't exist^^J}%
-% \else
-%     \read\reader to \readmacro
-%     \ifeof\reader
-%         \ifx\readmacro\eolmarker
-%             \message{^^J#1: is empty^^J}%
-%         \else
-%             \message{^^J#1: is not empty^^J}%
-%         \fi
-%     \else
-%         \message{^^J#1: is not empty^^J}%
-%     \fi
-% \fi
-% \closein\reader
-% }
-
-% currfiledir: \currfiledir
-
-% currfilebase: \currfilebase
-
-% currfileext: \currfileext
-
-% currfilename: \currfilename
-
-% currfilepath: \currfilepath
-
-% \jobname
 
 % ##########################################################################################################
 \end{jzrplain}

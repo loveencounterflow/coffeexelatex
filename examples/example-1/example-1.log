@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.1415926-2.5-0.9999.3 (TeX Live 2013) (format=xelatex 2013.6.22)  10 JAN 2014 18:30
+This is XeTeX, Version 3.1415926-2.5-0.9999.3 (TeX Live 2013) (format=xelatex 2013.6.22)  12 JAN 2014 22:52
 entering extended mode
  \write18 enabled.
  %&-line parsing enabled.
@@ -699,6 +699,16 @@ Package: verbatim 2003/08/22 v1.5q LaTeX2e package for verbatim enhancements
 \every@verbatim=\toks24
 \verbatim@line=\toks25
 \verbatim@in@stream=\read1
+)
+(/usr/local/texlive/2013/texmf-dist/tex/generic/catcodes/actcodes.sty
+(/usr/local/texlive/2013/texmf-dist/tex/generic/plainpkg/plainpkg.tex
+File: plainpkg.tex 2012/09/19 v0.4a plain package management
+
+(/usr/local/texlive/2013/texmf-dist/tex/generic/catcodes/stacklet.sty
+(/usr/local/texlive/2013/texmf-dist/tex/generic/plainpkg/plainpkg.tex)
+Package: stacklet 2012/11/07 v0.3a private letters (UL)
+))
+Package: actcodes 2012/11/07 v0.2a active characters (UL)
 ))
 (/usr/local/texlive/2013/texmf-dist/tex/latex/geometry/geometry.sty
 Package: geometry 2010/09/12 v5.6 Page Geometry
@@ -1182,24 +1192,24 @@ LaTeX Info: Redefining \nameref on input line 42.
 *geometry* detected driver: xetex
 *geometry* verbose mode - [ preamble ] result:
 * driver: xetex
-* paper: a5paper
+* paper: a4paper
 * layout: <same size as paper>
 * layoutoffset:(h,v)=(0.0pt,0.0pt)
 * modes: 
-* h-part:(L,W,R)=(63.16576pt, 294.76926pt, 63.16577pt)
-* v-part:(T,H,B)=(28.45274pt, 497.35347pt, 71.70166pt)
-* \paperwidth=421.10078pt
-* \paperheight=597.50787pt
-* \textwidth=294.76926pt
-* \textheight=497.35347pt
-* \oddsidemargin=-9.10423pt
-* \evensidemargin=-9.10423pt
-* \topmargin=-80.81725pt
+* h-part:(L,W,R)=(89.62709pt, 418.25368pt, 89.6271pt)
+* v-part:(T,H,B)=(42.67912pt, 700.96107pt, 101.40665pt)
+* \paperwidth=597.50787pt
+* \paperheight=845.04684pt
+* \textwidth=418.25368pt
+* \textheight=700.96107pt
+* \oddsidemargin=17.3571pt
+* \evensidemargin=17.3571pt
+* \topmargin=-66.59087pt
 * \headheight=12.0pt
 * \headsep=25.0pt
 * \topskip=10.0pt
 * \footskip=30.0pt
-* \marginparwidth=3.0pt
+* \marginparwidth=57.0pt
 * \marginparsep=11.0pt
 * \columnsep=10.0pt
 * \skip\footins=9.0pt plus 4.0pt minus 2.0pt
@@ -1255,82 +1265,55 @@ runsystem(node "../../lib/main" "example-1.tex" "helo" "readers (four)" > "/tmp
 ] [3
 
 ]
-runsystem(node "../../lib/main" "example-1.tex" "show-geometry" "" > "/tmp/CXte
-mpout.tex" 2> "/tmp/CXtemperr.tex")...executed.
+runsystem(node "../../lib/main" "example-1.tex" "show-special-chrs" "" > "/tmp/
+CXtempout.tex" 2> "/tmp/CXtemperr.tex")...executed.
 
 
 (/tmp/CXtempout.tex) [4
 
 ]
-Overfull \hbox (5.91457pt too wide) in paragraph at lines 146--149
-[]\EU1/lmr/m/n/10 The \EU1/lmr/m/it/10 Coffee\EU1/lmr/m/n/10 X[]L[]T[]X command
- []\EU1/lmtt/m/n/10 show-special-chrs \EU1/lmr/m/n/10 demonstrates that
- []
-
-runsystem(node "../../lib/main" "example-1.tex" "show-special-chrs" "" > "/tmp/
-CXtempout.tex" 2> "/tmp/CXtemperr.tex")...executed.
-
-(/tmp/CXtempout.tex) [5
-
-]
 LaTeX Font Info:    Font shape `EU1/lmtt/bx/n' in size <14.4> not available
-(Font)              Font shape `EU1/lmtt/b/n' tried instead on input line 161.
+(Font)              Font shape `EU1/lmtt/b/n' tried instead on input line 163.
 runsystem(node "../../lib/main" "example-1.tex" "show-aux" "" > "/tmp/CXtempout
 .tex" 2> "/tmp/CXtemperr.tex")...executed.
 
- (/tmp/CXtempout.tex
-Overfull \hbox (11.45328pt too wide) in paragraph at lines 3--3
-[]   \EU1/lmtt/m/n/8.53581 { intro: { name: 'intro', ref: 1, pageref: 2, title:
- 'Introduction' },[]  
- []
-
-
-Overfull \hbox (23.40343pt too wide) in paragraph at lines 4--4
-[]     \EU1/lmtt/m/n/8.53581 config: { name: 'config', ref: 2, pageref: 3, titl
-e: 'Configuration' },[]  
- []
-
-
-Overfull \hbox (17.42838pt too wide) in paragraph at lines 6--6
-[]     \EU1/lmtt/m/n/8.53581 esc: { name: 'esc', ref: 4, pageref: 5, title: 'Ch
-aracter Escaping' },[]  
- []
-
-)
+ (/tmp/CXtempout.tex)
 runsystem(coffee -e "console.log 23 + 65 * 123" > "/tmp/CXtempout.tex" 2> "/tmp
 /CXtemperr.tex")...executed.
 
- (/tmp/CXtempout.tex) [6
+ (/tmp/CXtempout.tex) [5
 
 ]
-runsystem(curl --silent --show-error 127.0.0.1:8910/foobar.tex/helo/黎永強 > "/tmp
-/CXtempout.tex" 2> "/tmp/CXtemperr.tex")...executed.
+runsystem(curl --silent --show-error  127.0.0.1:8910/foobar.tex/helo/friends > 
+"/tmp/CXtempout.tex" 2> "/tmp/CXtemperr.tex")...executed.
 
 
-/tmp/CXtemperr.tex empty
 (/tmp/CXtempout.tex)
-runsystem(curl --silent --show-error  127.0.0.1:8911/foobar.tex/helo/黎永強 > "/tm
-p/CXtempout.tex" 2> "/tmp/CXtemperr.tex")...executed.
+runsystem(curl --silent --show-error  localhost:8910/example-1.tex/helo/%60%7b%
+20%5b%20$%20~%20%25%20%23%20^%20%7c%20%7d%20%5d%20%27%3f > "/tmp/CXtempout.tex"
+ 2> "/tmp/CXtemperr.tex")...executed.
 
-File: /tmp/CXtemperr.tex  (verbatim)
-
-/tmp/CXtempout.tex empty
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 279.
-[7
+ (/tmp/CXtempout.tex)
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 249.
+ [6
 
 ]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 279.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 249.
  (./example-1.aux)
-Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 279.
-Package atveryend Info: Empty hook `AtEndAfterFileList' on input line 279.
+Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 249.
+Package atveryend Info: Empty hook `AtEndAfterFileList' on input line 249.
+
+
+LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+
  ) 
 Here is how much of TeX's memory you used:
- 25046 strings out of 493938
- 493669 string characters out of 6148857
- 620209 words of memory out of 5000000
- 28064 multiletter control sequences out of 15000+600000
+ 25090 strings out of 493938
+ 494733 string characters out of 6148857
+ 618749 words of memory out of 5000000
+ 28095 multiletter control sequences out of 15000+600000
  4144 words of font info for 33 fonts, out of 8000000 for 9000
  1144 hyphenation exceptions out of 8191
- 53i,7n,45p,860b,590s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 53i,7n,45p,860b,597s stack positions out of 5000i,500n,10000p,200000b,80000s
 
-Output written on example-1.pdf (7 pages).
+Output written on example-1.pdf (6 pages).

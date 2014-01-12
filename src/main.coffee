@@ -31,52 +31,53 @@ Line_by_line              = require 'line-by-line'
 
 #-----------------------------------------------------------------------------------------------------------
 @main = ->
-  # try
-  #   xxx
-  #   @_main()
-  # catch error
-  #   debug "there was an unhandled exception"
-  #   debug()
-  #   debug error[ 'message' ]
-  #   debug error[ 'stack' ]
-  @_main()
-  #.........................................................................................................
-  return null
-
-#-----------------------------------------------------------------------------------------------------------
-@_main = ->
-  ### The `main` routine collects the command name and command parameters from the environment
-  ###
   info "©45 argv: #{rpr process.argv}"
   texroute    = process.argv[ 2 ]
   command     = process.argv[ 3 ]
-  parameter   = process.argv[ 4 ] ? ''
+  method_name = command.replace /-/g, '_'
+  parameter   = process.argv[ 4 ]
   ### TAINT we naïvely split on comma, which is not robust in case e.g. string or list literals contain
   that character. Instead, we should be doing parsing (eg. using JSON? CoffeeScript expressions /
   signatures?) ###
-  parameters  = parameter.split ','
-  method_name = command.replace /-/g, '_'
-  # info "©44 texroute: #{rpr texroute}"
-  # info "©46 command: #{rpr command}, parameter: #{rpr parameter}"
+  P           = if ( parameter? and parameter.length > 0 ) then parameter.split ',' else []
   #.........................................................................................................
-  unless @[ method_name ]?
-    message = "Unknown command: #{rpr command}"
-    warn  message
-    debug message
-    return null
-  #.........................................................................................................
-  @read_aux texroute, ( error ) =>
-    throw error if error?
-    warn @aux
-    echo R if ( R = @[ method_name ] parameters... )?
+  @dispatch texroute, method_name, P..., ( error, result ) =>
+    #.......................................................................................................
+    if error?
+      # warn    error
+      debug   error
+    #.......................................................................................................
+    if result?
+      # whisper result
+      echo    result
   #.........................................................................................................
   return null
 
 #-----------------------------------------------------------------------------------------------------------
-@read_aux = ( texroute, handler ) ->
+@dispatch = ( texroute, method_name, P..., handler ) ->
+  return handler "Unknown command: #{rpr command}" unless @[ method_name ]?
+  @aux[ 'is-complete'   ] = no
+  @aux[ 'texroute'      ] = texroute
+  @aux[ 'method-name'   ] = method_name
+  @aux[ 'parameters'    ] = P
+  info '©56t', P
+  @[ method_name ] P..., handler
+  #.........................................................................................................
+  return null
+
+# #.........................................................................................................
+# @read_aux ( error ) =>
+#   throw error if error?
+#   warn @aux
+
+#-----------------------------------------------------------------------------------------------------------
+@read_aux = ( handler ) ->
+  return null if @aux[ 'is-complete' ]
+  #.........................................................................................................
+  texroute  = @aux[ 'texroute' ]
   last_idx  = texroute.length - 1 - ( njs_path.extname texroute ).length
   auxroute  = texroute[ 0 .. last_idx ].concat '.auxcopy'
-  # warn "#{auxroute} has #{( njs_fs.statSync auxroute ).size} bytes"
+  #.........................................................................................................
   unless njs_fs.existsSync auxroute
     warn "unable to locate #{auxroute}; ignoring"
     eventually => handler null
@@ -213,8 +214,8 @@ echo  = @echo.bind @
 #===========================================================================================================
 # SAMPLE COMMANDS
 #-----------------------------------------------------------------------------------------------------------
-@helo = ( name ) ->
-  return "{Hello, \\textcolor{blue}{#{@escape name}}!}"
+@helo = ( name, handler ) ->
+  handler null, "{Hello, \\textcolor{blue}{#{@escape name}}!}"
 
 #-----------------------------------------------------------------------------------------------------------
 @page_and_line_nr = ( page_nr, line_nr ) ->
@@ -227,9 +228,10 @@ echo  = @echo.bind @
 #-----------------------------------------------------------------------------------------------------------
 @show_geometry = ->
   unless ( g = @aux[ 'geometry' ] )?
-    debug """unable to retrieve geometry info from #{@aux[ 'auxroute' ]};"""
+    message = """unable to retrieve geometry info from #{@aux[ 'auxroute' ]};"""
+    debug message
       # you may want to consider using `\\auxgeo` in your TeX source."""
-    return null
+    return message
   #.........................................................................................................
   R     = []
   names = ( name for name of g ).sort()
@@ -245,7 +247,7 @@ echo  = @echo.bind @
   return R
 
 #-----------------------------------------------------------------------------------------------------------
-@show_special_chrs = ->
+@show_special_chrs = ( handler ) ->
   chr_by_names =
     'opening brace':    '{'
     'closing brace':    '}'
@@ -262,11 +264,14 @@ echo  = @echo.bind @
   R = R.join '\\\\\n'
   R = "\\begin{tabular}{ | l | c | }\n\\hline\n#{R}\\\\\n\\hline\n\\end{tabular}"
   #.........................................................................................................
-  return R
+  handler null, R
 
 #-----------------------------------------------------------------------------------------------------------
-@show_aux = ->
-  return "\\begin{verbatim}#{rpr @aux}\\end{verbatim}"
+@show_aux = ( handler ) ->
+  #.........................................................................................................
+  @read_aux ( error ) =>
+    return handler error if error?
+    handler null, "\\begin{verbatim}#{rpr @aux}\\end{verbatim}"
 
 
 #===========================================================================================================
